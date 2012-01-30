@@ -149,7 +149,7 @@ class DemoController extends Controller
 
     /**
      * @Route("/test", name="_demo_test")
-     * @TagCache(expires=600,tags={"TagA","TagB"},,cache=true)
+     * @TagCache(expires=600,tags={"TagA","TagB"},cachekey=custom_cache_key,cache=true)
      * @Template()
      */
     public function testAction()
@@ -157,4 +157,31 @@ class DemoController extends Controller
         return;
     }
 }
+```
 
+```html+jinja
+{#in view render a controller#}
+{%render 'AcmeDemoBundle:Demo:test' with {
+     '_TagCache':    {
+           'key':    'my_custom_cache_key',
+           'tags':   {'TagC','TagD'},
+           'expires': 300
+     }
+}%}
+```
+
+#### Note
+
+If you both define cache params in view and controller. _TagCache in view will overwrite controller annotations.
+But remember,controller annotation config "cache" must set to true,If you want to turn on controller cache.
+
+TODO
+----
+
+* command line tools for clear cache.
+* debug information for controller cache.
+
+LICENSE
+-------
+
+MIT
