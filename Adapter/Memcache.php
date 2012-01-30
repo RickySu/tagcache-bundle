@@ -1,9 +1,9 @@
 <?php
 
-namespace Ricky\TagCacheBundle\Adapter;
+namespace RickySu\TagCacheBundle\Adapter;
 
-use Ricky\TagCacheBundle\Adapter\TagCacheAdapter;
-use Ricky\TagCacheBundle\TagCacheObj;
+use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
+use RickySu\TagCacheBundle\TagCacheObj;
 
 class Memcache extends TagCacheAdapter {
 

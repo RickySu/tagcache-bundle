@@ -1,6 +1,6 @@
 parameters:
-    tag_cache.factory:             Ricky\TagCacheBundle\TagCacheFactory
-    tag_cache.TagCache.Adapter:    Ricky\TagCacheBundle\TagCache\TagCacheAdapter
+    tag_cache.factory:             RickySu\TagCacheBundle\TagCacheFactory
+    tag_cache.TagCache.Adapter:    RickySu\TagCacheBundle\TagCache\TagCacheAdapter
 
 services:
         tag_cache:
@@ -10,7 +10,7 @@ services:
             arguments:
                 -                  %tag_cache%
         action_cache_listener_service:
-            class:                 Ricky\TagCacheBundle\EventListener\ActionCacheListener
+            class:                 RickySu\TagCacheBundle\EventListener\ActionCacheListener
             arguments:             ['@service_container','@controller_resolver',%tag_cache%]
             tags:
                  #request lower priority

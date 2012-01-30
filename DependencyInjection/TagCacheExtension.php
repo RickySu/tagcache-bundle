@@ -1,6 +1,6 @@
 <?php
 
-namespace Ricky\TagCacheBundle\DependencyInjection;
+namespace RickySu\TagCacheBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ricky\TagCacheBundle;
+namespace RickySu\TagCacheBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

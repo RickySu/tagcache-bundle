@@ -1,6 +1,6 @@
 <?php
 
-namespace Ricky\TagCacheBundle\Configuration;
+namespace RickySu\TagCacheBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
 /**

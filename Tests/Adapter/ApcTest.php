@@ -1,15 +1,15 @@
 <?php
 
-namespace Ricky\TagCacheBundle\Tests\Adapter;
+namespace RickySu\TagCacheBundle\Tests\Adapter;
 
-use Ricky\TagCacheBundle\Tests\Adapter\BaseTagCacheAdapter;
-use Ricky\TagCacheBundle\Adapter\Apc;
+use RickySu\TagCacheBundle\Tests\Adapter\BaseTagCacheAdapter;
+use RickySu\TagCacheBundle\Adapter\Apc;
 
 class ApcTest extends BaseTagCacheAdapter {
 
     protected function setupCache($EnableLargeObject=false) {
         $this->Cache = new Apc(md5(microtime() . rand()), array(
-                    'cache_dir' => $_SERVER['SYMFONY'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'Ricky.TagCacheBundle',
+                    'cache_dir' => $_SERVER['SYMFONY'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'RickySu.TagCacheBundle',
                     'hashkey' => true,
                     'enable_largeobject'=>$EnableLargeObject,
                 ));

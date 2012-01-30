@@ -1,8 +1,8 @@
 <?php
 
-namespace Ricky\TagCacheBundle\Adapter;
+namespace RickySu\TagCacheBundle\Adapter;
 
-use Ricky\TagCacheBundle\TagCacheObj;
+use RickySu\TagCacheBundle\TagCacheObj;
 
 abstract class TagCacheAdapter {
 

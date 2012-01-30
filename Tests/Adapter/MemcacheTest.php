@@ -1,9 +1,9 @@
 <?php
 
-namespace Ricky\TagCacheBundle\Tests\Adapter;
+namespace RickySu\TagCacheBundle\Tests\Adapter;
 
-use Ricky\TagCacheBundle\Tests\Adapter\BaseTagCacheAdapter;
-use Ricky\TagCacheBundle\Adapter\Memcache;
+use RickySu\TagCacheBundle\Tests\Adapter\BaseTagCacheAdapter;
+use RickySu\TagCacheBundle\Adapter\Memcache;
 
 class MemcacheTest extends BaseTagCacheAdapter {
 

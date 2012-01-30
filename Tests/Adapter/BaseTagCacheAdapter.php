@@ -1,8 +1,8 @@
 <?php
 
-namespace Ricky\TagCacheBundle\Tests\Adapter;
+namespace RickySu\TagCacheBundle\Tests\Adapter;
 
-use Ricky\TagCacheBundle\Adapter\TagCacheAdapter;
+use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
 
 abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
 

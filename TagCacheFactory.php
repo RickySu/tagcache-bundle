@@ -1,8 +1,8 @@
 <?php
 
-namespace Ricky\TagCacheBundle;
+namespace RickySu\TagCacheBundle;
 
-use Ricky\TagCacheBundle\TagCahe\TagCacheAdapter;
+use RickySu\TagCacheBundle\TagCahe\TagCacheAdapter;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class TagCacheFactory {
@@ -14,7 +14,7 @@ class TagCacheFactory {
     }
 
     static protected function Factory($Config){
-        $Driver='Ricky\\TagCacheBundle\\Adapter\\'.$Config['driver'];
+        $Driver='RickySu\\TagCacheBundle\\Adapter\\'.$Config['driver'];
         self::$Instance=new $Driver($Config['namespace'],$Config['options']);
         return self::$Instance;
     }

@@ -10,7 +10,7 @@ $loader->register();
 
 spl_autoload_register(function($class)
 {
-    if (0 === strpos($class, 'Ricky\\TagCacheBundle\\')) {
+    if (0 === strpos($class, 'RickySu\\TagCacheBundle\\')) {
         $path = implode('/', array_slice(explode('\\', $class), 2)).'.php';
         require_once __DIR__.'/../'.$path;
         return true;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Ricky\TagCacheBundle\EventListener;
+namespace RickySu\TagCacheBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\Event;
@@ -8,8 +8,8 @@ use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Ricky\TagCacheBundle\Component\TagCacheResponse;
-use Ricky\TagCacheBundle\Configuration\TagCache as TagCacheConfigurationAnnotation;
+use RickySu\TagCacheBundle\Component\TagCacheResponse;
+use RickySu\TagCacheBundle\Configuration\TagCache as TagCacheConfigurationAnnotation;
 
 class ActionCacheListener {
 
@@ -20,7 +20,7 @@ class ActionCacheListener {
 
     /**
      *
-     * @var Ricky\TagCacheBundle\Adapter\TagCacheAdapter
+     * @var RickySu\TagCacheBundle\Adapter\TagCacheAdapter
      */
     protected $TagCache;
     protected $Reader = null;
