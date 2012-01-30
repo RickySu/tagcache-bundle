@@ -1,0 +1,19 @@
+parameters:
+    tag_cache.factory:             Ricky\TagCacheBundle\TagCacheFactory
+    tag_cache.TagCache.Adapter:    Ricky\TagCacheBundle\TagCache\TagCacheAdapter
+
+services:
+        tag_cache:
+            class:                 %tag_cache.TagCache.Adapter%
+            factory_class:         %tag_cache.factory%
+            factory_method:        getInstance
+            arguments:
+                -                  %tag_cache%
+        action_cache_listener_service:
+            class:                 Ricky\TagCacheBundle\EventListener\ActionCacheListener
+            arguments:             ['@service_container','@controller_resolver',%tag_cache%]
+            tags:
+                 #request lower priority
+                 #response higher priority
+                                   - { name: kernel.event_listener, event: kernel.request, method: handleRequest  ,priority: -999 }
+                                   - { name: kernel.event_listener, event: kernel.response, method: handleResponse  ,priority: 999 }
