@@ -55,7 +55,7 @@ class ActionCacheListener {
                 if (!isset($AnnotationConfig['cache']) || $AnnotationConfig['cache'] != true) {
                     $TagCacheConfig = array();
                 }
-                $Event->getRequest()->attributes->set('_TagCacheKey', $TagCacheConfig);
+                $Event->getRequest()->attributes->set('_TagCache', $TagCacheConfig);
                 return $TagCacheConfig;
             }
         }
