@@ -100,4 +100,61 @@ Memcache server configs. format => "Host:Port:Weight"
 How to Use
 ----------
 
-    
+### Using TagCache for storing data.
+
+```php
+<?php
+$TagCache=$container->get('tag_cache');
+
+//store cache with Tags:{TagA,TagB} for 300 secs.
+$TagCache->set('Key_For_Store','Data_For_Store',array('TagA','TagB'),300);
+
+//get cache.
+$TagCache->get('Key_For_Store');
+
+//delete cache.
+$TagCache->delete('Key_For_Store');
+
+//delete cache by Tag.
+$TagCache->TagDelete('TagA');
+
+//acquire a lock.If a lock already exists,It will be blocked for 5 secs.
+$TagCache->getLock('Your_Lock_Name',5);
+
+//release a lock.
+$TagCache->releaseLock('Your_Lock_Name');
+```
+
+### Controller Cache
+
+```php
+<?php
+//in Controller
+namespace Acme\DemoBundle\Controller;
+
+// these import the "@TagCache" annotations
+use RickySu\TagCacheBundle\Configuration\TagCache;
+
+class DemoController extends Controller
+{
+    /**
+     * @Route("/hello/{name}", name="_demo_hello")
+     * @TagCache(expires=600,cache=true)
+     * @Template()
+     */
+    public function helloAction($name)
+    {  
+        return array('name' => $name);
+    }
+
+    /**
+     * @Route("/test", name="_demo_test")
+     * @TagCache(expires=600,tags={"TagA","TagB"},,cache=true)
+     * @Template()
+     */
+    public function testAction()
+    {  
+        return;
+    }
+}
+
