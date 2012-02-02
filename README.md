@@ -127,6 +127,7 @@ $TagCache->releaseLock('Your_Lock_Name');
 
 ### Controller Cache
 
+#### Controller Setting
 ```php
 <?php
 //in Controller
@@ -158,6 +159,8 @@ class DemoController extends Controller
     }
 }
 ```
+
+#### View Setting(Twig)
 
 ```html+jinja
 {#in view render a controller#}
