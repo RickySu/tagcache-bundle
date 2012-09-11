@@ -7,7 +7,6 @@ use RickySu\TagCacheBundle\TagCacheObj;
 
 class Apc extends TagCacheAdapter {
 
-
     const APC_OBJ_MAXSIZE = 1024000;
 
     public function __construct($NameSpace, $Options) {
@@ -16,9 +15,9 @@ class Apc extends TagCacheAdapter {
 
     protected function setRaw($key, $Obj, $expire = 0) {
         if (!$this->Options['enable_largeobject']) {
-            return apc_store($key, $Obj,$expire);
+            return apc_store($key, $Obj, $expire);
         }
-        if (@apc_store($key, $Obj,$expire)) {
+        if (@apc_store($key, $Obj, $expire)) {
             return true;
         }
         //Need to Split Data
@@ -70,13 +69,13 @@ class Apc extends TagCacheAdapter {
     }
 
     protected function deleteRaw($key) {
-        return apc_fetch($key);
+        return apc_delete($key);
     }
 
     public function inc($key, $expire = 0) {
         $key = $this->buildKey($key);
         if (apc_inc($key) === false) {
-            return apc_store($key, "1", $expire);
+            return apc_store($key, 1, $expire);
         }
         return true;
     }

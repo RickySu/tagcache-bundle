@@ -165,19 +165,7 @@ class TagCacheAdapterTest extends \PHPUnit_Framework_TestCase {
         $TestingTagCacheAdapter = new TestingTagCacheAdapter($Namespace, $Options);
         $this->assertEquals($Expeted, $TestingTagCacheAdapter->getbuildKey($Key), $Message);
     }
-
-    /**
-     *
-     * @dataProvider DataProvider_getTagCacheObjContent
-     */
-    public function testgetTagCacheObjContent($Expected, $TagCacheObj, $Timestamp, $Tags) {
-        $Namespace = md5(microtime() . rand());
-        $TestingTagCacheAdapter = new TestingTagCacheAdapter($Namespace, array('hashkey' => false));
-        $TestingTagCacheAdapter->CurrentTimestamp = $Timestamp;
-        $TestingTagCacheAdapter->TagUpdateTimestamp = $Tags;
-        $this->assertEquals($Expected, $TestingTagCacheAdapter->getTagCacheObjContent($TagCacheObj));
-    }
-
+    
     protected function tearDown() {
 
     }
