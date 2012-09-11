@@ -6,19 +6,22 @@ use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
 use RickySu\TagCacheBundle\TagCacheObj;
 use \PDO;
 
-class Sqlite extends TagCacheAdapter {
-
+class Sqlite extends TagCacheAdapter
+{
     protected $Sqlite, $DBFile;
 
-    public function __construct($NameSpace, $Options) {
+    public function __construct($NameSpace, $Options)
+    {
         parent::__construct($NameSpace, $Options);
         $this->InitDBFile();
     }
 
-    protected function InitDBFile() {
+    protected function InitDBFile()
+    {
         $this->DBFile = $this->Options['cache_dir'] . DIRECTORY_SEPARATOR . 'Sqlite' . DIRECTORY_SEPARATOR . md5($this->Namespace) . '.sqlite';
         if (file_exists($this->DBFile)) {
             $this->Sqlite = new PDO("sqlite:" . $this->DBFile);
+
             return;
         }
         @mkdir(dirname($this->DBFile), 0777, true);
@@ -29,15 +32,18 @@ class Sqlite extends TagCacheAdapter {
         }
     }
 
-    public function getTagUpdateTimestamp($Tag) {
+    public function getTagUpdateTimestamp($Tag)
+    {
         $TagHash = md5($Tag);
         $sql = "select * from Tag where tagkey='$TagHash';";
         $Res = $this->Sqlite->query($sql);
         $Row = $Res->fetch(PDO::FETCH_ASSOC);
+
         return $Row['createdate'];
     }
 
-    public function getTags($Key) {
+    public function getTags($Key)
+    {
         $KeyHash = md5($Key);
         $sql = "select * from CacheData where cachekey='$KeyHash';";
         $Res = $this->Sqlite->query($sql);
@@ -46,10 +52,12 @@ class Sqlite extends TagCacheAdapter {
         if ($Obj instanceof TagCacheObj) {
             return $Obj->Tags;
         }
+
         return false;
     }
 
-    public function set($Key, $var, $Tags = array(), $expire = null) {
+    public function set($Key, $var, $Tags = array(), $expire = null)
+    {
         if ($expire) {
             $expire+=time();
         }
@@ -72,10 +80,12 @@ class Sqlite extends TagCacheAdapter {
         $sql = "insert into CacheData(cachekey,cachedata,createdate) values(?,?,?);";
         $this->Sqlite->prepare($sql)->execute(array($KeyHash, serialize($Obj), time()));
         $this->Sqlite->commit();
+
         return true;
     }
 
-    public function get($Key) {
+    public function get($Key)
+    {
         $KeyHash = md5($Key);
         $sql = "select * from CacheData where cachekey='$KeyHash';";
         $Res = $this->Sqlite->query($sql);
@@ -86,19 +96,24 @@ class Sqlite extends TagCacheAdapter {
             if ($Data === false) {
                 $this->delete($Key);
             }
+
             return $Data;
         }
+
         return $Obj;
     }
 
-    public function delete($Key) {
+    public function delete($Key)
+    {
         $KeyHash = md5($Key);
         $sql = "delete from CacheData where cachekey='$KeyHash';";
         $this->Sqlite->exec($sql);
+
         return true;
     }
 
-    public function deleteTag($Tag) {
+    public function deleteTag($Tag)
+    {
         $TagHash = md5($Tag);
         $this->Sqlite->beginTransaction();
         $sql = "delete from CacheData where cachekey in (select cachekey from TagRelation where tagkey='$TagHash');";
@@ -108,10 +123,12 @@ class Sqlite extends TagCacheAdapter {
         $sql = "delete from Tag where tagkey='$TagHash';";
         $this->Sqlite->exec($sql);
         $this->Sqlite->commit();
+
         return true;
     }
 
-    public function clear() {
+    public function clear()
+    {
         $this->Sqlite->beginTransaction();
         $sql = "delete from CacheData;";
         $this->Sqlite->exec($sql);
@@ -122,14 +139,16 @@ class Sqlite extends TagCacheAdapter {
         $this->Sqlite->commit();
     }
 
-    public function getRaw($key) {
-
+    public function getRaw($key)
+    {
     }
 
-    public function setRaw($key, $Obj, $expire) {
+    public function setRaw($key, $Obj, $expire)
+    {
     }
 
-    public function deleteRaw($key) {
+    public function deleteRaw($key)
+    {
     }
 
 }

@@ -4,12 +4,13 @@ namespace RickySu\TagCacheBundle\Tests\Adapter;
 
 use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
 
-abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
-
+abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase
+{
     protected $Cache;
     protected $StaticsetTestData = null;
 
-    protected function setUp() {
+    protected function setUp()
+    {
         $this->setupCache();
     }
 
@@ -18,11 +19,13 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
      */
     abstract protected function setupCache();
 
-    public function DataProvider_testSet($DataRows = 5) {
+    public function DataProvider_testSet($DataRows = 5)
+    {
         $Rows = array();
         for ($i = 0; $i <= $DataRows; $i++) {
             $Rows[] = array(md5(microtime() . rand()), md5(microtime() . rand()));
         }
+
         return $Rows;
     }
 
@@ -30,7 +33,8 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
      *
      * @dataProvider DataProvider_testSet
      */
-    public function testSet($Key, $Data) {
+    public function testSet($Key, $Data)
+    {
         $this->assertTrue($this->Cache->set($Key, $Data));
     }
 
@@ -38,7 +42,8 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
      *
      * @dataProvider DataProvider_testSet
      */
-    public function testGet($Key, $Data) {
+    public function testGet($Key, $Data)
+    {
         $this->Cache->set($Key, $Data);
         $this->assertEquals($Data, $this->Cache->get($Key));
     }
@@ -47,7 +52,8 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
      *
      * @dataProvider DataProvider_testSet
      */
-    public function testDelete($Key, $Data) {
+    public function testDelete($Key, $Data)
+    {
         $this->Cache->set($Key, $Data);
         $this->Cache->delete($Key);
         $this->assertFalse($this->Cache->get($Key));
@@ -57,16 +63,18 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
      *
      * @dataProvider DataProvider_testSet
      */
-    public function testClear($Key, $Data) {
+    public function testClear($Key, $Data)
+    {
         $this->Cache->set($Key, $Data);
         $this->Cache->clear();
         $this->assertFalse($this->Cache->get($Key));
     }
 
-    public function testInc() {
+    public function testInc()
+    {
         $Key="test:forInc";
         $this->Cache->delete($Key);
-        for($i=1;$i<=3;$i++){
+        for ($i=1;$i<=3;$i++) {
             $this->assertTrue($this->Cache->Inc($Key),"Inc pass $i");
         }
         $this->assertEquals(3,$this->Cache->get($Key),"Inc $Key");
@@ -76,7 +84,8 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
      *
      * @dataProvider DataProvider_testSet
      */
-    public function testdeleteTag() {
+    public function testdeleteTag()
+    {
         $Data = $this->DataProvider_testSet(20);
         foreach ($Data as $Index => $Row) {
             list($Key, $Val) = $Row;
@@ -88,8 +97,7 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
             list($Key, $Val) = $Row;
             if (in_array($Index % 4, array(1, 3)) !== false) {
                 $this->assertFalse($this->Cache->get($Key), "$Index::$Key");
-            }
-            else {
+            } else {
                 $this->assertEquals($Val, $this->Cache->get($Key), "$Index::$Key");
             }
         }
@@ -99,7 +107,8 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
      *
      * @dataProvider DataProvider_testSet
      */
-    public function testgetTags() {
+    public function testgetTags()
+    {
         $Tags = array();
         for ($i = 0; $i < 5; $i++) {
             $Tags[] = md5(microtime() . rand());
@@ -110,7 +119,8 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($Tags, $ActualTags);
     }
 
-    public function testgetLock(){
+    public function testgetLock()
+    {
         $this->Cache->getLock('TestLock',3);
         $StartTime=microtime(true);
         $this->Cache->getLock('TestLock',3);
@@ -119,7 +129,8 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
         $this->Cache->releaseLock('TestLock');
     }
 
-    public function testreleaseLock(){
+    public function testreleaseLock()
+    {
         $this->Cache->getLock('TestLock',5);
         $StartTime=microtime(true);
         $this->Cache->releaseLock('TestLock');
@@ -129,7 +140,8 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
         $this->Cache->releaseLock('TestLock');
     }
 
-    protected function tearDown() {
+    protected function tearDown()
+    {
         $this->Cache->clear();
         unset($this->Cache);
     }

@@ -2,8 +2,8 @@
 
 namespace RickySu\TagCacheBundle;
 
-class TagCacheObj {
-
+class TagCacheObj
+{
     public $Var;
     public $Tags;
     public $Timestamp;
@@ -11,18 +11,20 @@ class TagCacheObj {
     public $Chunked = 0;
 
     /**
-     * @param mixed $Var
-     * @param array $Tags
+     * @param mixed       $Var
+     * @param array       $Tags
      * @param TagMemcache $TagMemcache
      */
-    public function __construct($Var, $Tags, $expire = 0) {
+    public function __construct($Var, $Tags, $expire = 0)
+    {
         $this->Var = $Var;
         $this->Tags = $Tags;
         $this->Timestamp = TagCacheTime::time();
         $this->expire = $expire;
     }
 
-    public function getVar($CacheAdapter) {
+    public function getVar($CacheAdapter)
+    {
         if ($this->expire && ($this->expire < TagCacheTime::time())) {
             return false;
         }
@@ -36,10 +38,12 @@ class TagCacheObj {
                     return false;
                 }
             }
+
         return $this->Var;
     }
 
-    public function getTags() {
+    public function getTags()
+    {
         return $this->Tags;
     }
 

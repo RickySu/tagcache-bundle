@@ -5,9 +5,10 @@ namespace RickySu\TagCacheBundle\Tests\Adapter;
 use RickySu\TagCacheBundle\Tests\Adapter\BaseTagCacheAdapter;
 use RickySu\TagCacheBundle\Adapter\Memcache;
 
-class MemcacheTest extends BaseTagCacheAdapter {
-
-    protected function setupCache($EnableLargeObject=false) {
+class MemcacheTest extends BaseTagCacheAdapter
+{
+    protected function setupCache($EnableLargeObject=false)
+    {
         $this->Cache = new Memcache(md5(microtime() . rand()), array(
                     'hashkey' => true,
                     'servers' => array('127.0.0.1:11211:10'),
@@ -15,7 +16,8 @@ class MemcacheTest extends BaseTagCacheAdapter {
                 ));
     }
 
-    public function testBigObject() {
+    public function testBigObject()
+    {
         $this->setupCache(true);
         $BigString = '';
         for ($i = 0; $i < 1024 * 1024 * 4; $i++) {

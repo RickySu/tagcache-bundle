@@ -3,15 +3,15 @@
 namespace RickySu\TagCacheBundle\Adapter;
 
 use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
-use RickySu\TagCacheBundle\TagCacheObj;
 
-class Memcache extends TagCacheAdapter {
-
+class Memcache extends TagCacheAdapter
+{
     protected $Memcache = null;
 
     const MEMCACHE_OBJ_MAXSIZE = 1024000;
 
-    public function __construct($NameSpace, $Options) {
+    public function __construct($NameSpace, $Options)
+    {
         parent::__construct($NameSpace, $Options);
         $this->Memcache = new \Memcache();
         foreach ($Options['servers'] as $Server) {
@@ -20,18 +20,22 @@ class Memcache extends TagCacheAdapter {
         }
     }
 
-    public function getLock($Key, $LockExpire = 3) {
+    public function getLock($Key, $LockExpire = 3)
+    {
         while (!$this->Memcache->add($this->buildKey(self::LOCK_PREFIX . $Key), 'LCK', false, $LockExpire)) {
             usleep(rand(1, 500));
         }
+
         return true;
     }
 
-    public function releaseLock($Key) {
+    public function releaseLock($Key)
+    {
         return $this->Memcache->delete($this->buildKey(self::LOCK_PREFIX . $Key), 0);
     }
 
-    protected function setRaw($key, $Obj, $expire = 0) {
+    protected function setRaw($key, $Obj, $expire = 0)
+    {
         if (!$this->Options['enable_largeobject']) {
             return $this->Memcache->set($key, $Obj, 0, $expire);
         }
@@ -54,10 +58,12 @@ class Memcache extends TagCacheAdapter {
             }
             $Start+=self::MEMCACHE_OBJ_MAXSIZE;
         }
+
         return true;
     }
 
-    protected function getRaw($key) {
+    protected function getRaw($key)
+    {
         $Obj = $this->Memcache->get($key);
         if (!$this->Options['enable_largeobject']) {
             return $Obj;
@@ -83,26 +89,32 @@ class Memcache extends TagCacheAdapter {
                 unset($ChunkData);
             }
         }
+
         return $Obj;
     }
 
-    protected function deleteRaw($key) {
+    protected function deleteRaw($key)
+    {
         return $this->Memcache->delete($key, 0);
     }
 
-    public function inc($key, $expire = 0) {
+    public function inc($key, $expire = 0)
+    {
         $key = $this->buildKey($key);
         if ($this->Memcache->increment($key) === false) {
             return $this->Memcache->set($key, 1, 0, $expire);
         }
+
         return true;
     }
 
-    public function dec($key, $expire = 0) {
+    public function dec($key, $expire = 0)
+    {
         $key = $this->buildKey($key);
         if ($this->Memcache->decrement($key) === false) {
             return $this->Memcache->set($key, 0, 0, $expire);
         }
+
         return true;
     }
 

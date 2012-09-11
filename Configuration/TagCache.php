@@ -47,27 +47,33 @@ class TagCache extends ConfigurationAnnotation
 
     protected $EnableCache;
 
-    public function setCache($Enable){
+    public function setCache($Enable)
+    {
         $this->EnableCache=$Enable;
     }
 
-    public function getCache(){
+    public function getCache()
+    {
         return $this->EnableCache;
     }
 
-    public function setKey($cachekey){
+    public function setKey($cachekey)
+    {
         $this->cachekey=$cachekey;
     }
 
-    public function getKey(){
+    public function getKey()
+    {
         return $this->cachekey;
     }
 
-    public function setTags($tags){
+    public function setTags($tags)
+    {
         $this->tags=$tags;
     }
 
-    public function getTags(){
+    public function getTags()
+    {
         return $this->tags;
     }
 
@@ -102,7 +108,8 @@ class TagCache extends ConfigurationAnnotation
         return 'tagcache';
     }
 
-    public function getConfigs(){
+    public function getConfigs()
+    {
         return array(
             'key' => $this->cachekey,
             'expires' => $this->expires,

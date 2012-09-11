@@ -3,17 +3,18 @@
 namespace RickySu\TagCacheBundle\Adapter;
 
 use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
-use RickySu\TagCacheBundle\TagCacheObj;
 
-class Apc extends TagCacheAdapter {
-
+class Apc extends TagCacheAdapter
+{
     const APC_OBJ_MAXSIZE = 1024000;
 
-    public function __construct($NameSpace, $Options) {
+    public function __construct($NameSpace, $Options)
+    {
         parent::__construct($NameSpace, $Options);
     }
 
-    protected function setRaw($key, $Obj, $expire = 0) {
+    protected function setRaw($key, $Obj, $expire = 0)
+    {
         if (!$this->Options['enable_largeobject']) {
             return apc_store($key, $Obj, $expire);
         }
@@ -36,10 +37,12 @@ class Apc extends TagCacheAdapter {
             }
             $Start+=self::APC_OBJ_MAXSIZE;
         }
+
         return true;
     }
 
-    protected function getRaw($key) {
+    protected function getRaw($key)
+    {
         $Obj = apc_fetch($key);
         if (!$this->Options['enable_largeobject']) {
             return $Obj;
@@ -65,30 +68,37 @@ class Apc extends TagCacheAdapter {
                 unset($ChunkData);
             }
         }
+
         return $Obj;
     }
 
-    protected function deleteRaw($key) {
+    protected function deleteRaw($key)
+    {
         return apc_delete($key);
     }
 
-    public function inc($key, $expire = 0) {
+    public function inc($key, $expire = 0)
+    {
         $key = $this->buildKey($key);
         if (apc_inc($key) === false) {
             return apc_store($key, 1, $expire);
         }
+
         return true;
     }
 
-    public function dec($key, $expire = 0) {
+    public function dec($key, $expire = 0)
+    {
         $key = $this->buildKey($key);
         if (apc_dec($key) === false) {
             return apc_store($key, 0, $expire);
         }
+
         return true;
     }
 
-    public function clear() {
+    public function clear()
+    {
         return apc_clear_cache('user');
     }
 

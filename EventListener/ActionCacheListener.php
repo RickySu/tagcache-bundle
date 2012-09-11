@@ -11,8 +11,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use RickySu\TagCacheBundle\Component\TagCacheResponse;
 use RickySu\TagCacheBundle\Configuration\TagCache as TagCacheConfigurationAnnotation;
 
-class ActionCacheListener {
-
+class ActionCacheListener
+{
     /**
      * @var Symfony\Component\DependencyInjection\ContainerInterface
      */
@@ -31,14 +31,16 @@ class ActionCacheListener {
      *
      * @param ContainerInterface $container The service container instance
      */
-    public function __construct(ContainerInterface $container, $Resolver, $Config) {
+    public function __construct(ContainerInterface $container, $Resolver, $Config)
+    {
         $this->Container = $container;
         $this->TagCache = $container->get('tag_cache');
         $this->Reader = $container->get('annotation_reader');
         $this->Resolver = $Resolver;
     }
 
-    protected function LoadAnnotationConfig($Event) {
+    protected function loadAnnotationConfig($Event)
+    {
         if (!($Controller = $this->Resolver->getController($Event->getRequest()))) {
             return array();
         }
@@ -56,15 +58,18 @@ class ActionCacheListener {
                     $TagCacheConfig = array();
                 }
                 $Event->getRequest()->attributes->set('_TagCache', $TagCacheConfig);
+
                 return $TagCacheConfig;
             }
         }
+
         return array();
     }
 
-    protected function getTagCacheConfig($Event) {
+    protected function getTagCacheConfig($Event)
+    {
         if (!($TagCacheConfig = $Event->getRequest()->attributes->get('_TagCache'))) {
-            $TagCacheConfig = $this->LoadAnnotationConfig($Event);
+            $TagCacheConfig = $this->loadAnnotationConfig($Event);
         }
         if (!isset($TagCacheConfig['cache']) || !$TagCacheConfig['cache']) {
             return false;
@@ -72,6 +77,7 @@ class ActionCacheListener {
         if (!isset($TagCacheConfig['key'])) {
             $TagCacheConfig['key'] = $Event->getRequest()->attributes->get('_controller');
         }
+
         return $TagCacheConfig;
     }
 
@@ -80,7 +86,8 @@ class ActionCacheListener {
      *
      * @param Event $event
      */
-    public function handleRequest(GetResponseEvent $Event) {
+    public function handleRequest(GetResponseEvent $Event)
+    {
         if (!($TagCacheConfig = $this->getTagCacheConfig($Event))) {
             return;
         }
@@ -89,11 +96,13 @@ class ActionCacheListener {
                 return;
             }
             $Event->setResponse(new TagCacheResponse($CacheContent['Content']));
+
             return;
         }
     }
 
-    public function handleResponse(FilterResponseEvent $Event) {
+    public function handleResponse(FilterResponseEvent $Event)
+    {
         if (!($TagCacheConfig = $this->getTagCacheConfig($Event))) {
             return;
         }
