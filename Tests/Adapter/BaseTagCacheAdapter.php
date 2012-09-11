@@ -63,18 +63,27 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase {
         $this->assertFalse($this->Cache->get($Key));
     }
 
+    public function testInc() {
+        $Key="test:forInc";
+        $this->Cache->delete($Key);
+        for($i=1;$i<=3;$i++){
+            $this->assertTrue($this->Cache->Inc($Key),"Inc pass $i");
+        }
+        $this->assertEquals(3,$this->Cache->get($Key),"Inc $Key");
+    }
+
     /**
      *
      * @dataProvider DataProvider_testSet
      */
-    public function testTagDelete() {
+    public function testdeleteTag() {
         $Data = $this->DataProvider_testSet(20);
         foreach ($Data as $Index => $Row) {
             list($Key, $Val) = $Row;
             $this->Cache->set($Key, $Val, array("Tag:" . ($Index % 4)));
         }
-        $this->Cache->TagDelete("Tag:1");
-        $this->Cache->TagDelete("Tag:3");
+        $this->Cache->deleteTag("Tag:1");
+        $this->Cache->deleteTag("Tag:3");
         foreach ($Data as $Index => $Row) {
             list($Key, $Val) = $Row;
             if (in_array($Index % 4, array(1, 3)) !== false) {

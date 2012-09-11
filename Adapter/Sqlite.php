@@ -82,7 +82,7 @@ class Sqlite extends TagCacheAdapter {
         $Row = $Res->fetch(PDO::FETCH_ASSOC);
         $Obj = unserialize($Row['cachedata']);
         if ($Obj instanceof TagCacheObj) {
-            $Data = $this->getTagCacheObjContent($Obj);
+            $Data = $Obj->getVar($this);
             if ($Data === false) {
                 $this->delete($Key);
             }
@@ -98,7 +98,7 @@ class Sqlite extends TagCacheAdapter {
         return true;
     }
 
-    public function TagDelete($Tag) {
+    public function deleteTag($Tag) {
         $TagHash = md5($Tag);
         $this->Sqlite->beginTransaction();
         $sql = "delete from CacheData where cachekey in (select cachekey from TagRelation where tagkey='$TagHash');";
@@ -120,6 +120,16 @@ class Sqlite extends TagCacheAdapter {
         $sql = "delete from Tag;";
         $this->Sqlite->exec($sql);
         $this->Sqlite->commit();
+    }
+
+    public function getRaw($key) {
+
+    }
+
+    public function setRaw($key, $Obj, $expire) {
+    }
+
+    public function deleteRaw($key) {
     }
 
 }

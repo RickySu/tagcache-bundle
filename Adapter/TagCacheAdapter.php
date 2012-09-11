@@ -3,8 +3,13 @@
 namespace RickySu\TagCacheBundle\Adapter;
 
 use RickySu\TagCacheBundle\TagCacheObj;
+use RickySu\TagCacheBundle\TagCacheTime;
 
 abstract class TagCacheAdapter {
+
+    const TAG_PREFIX = 'TagCacheBundle#Tag';
+    const LOCK_PREFIX = 'TagCacheBundle#Lock';
+    const TAG_CLEAR_ALL = '__TagCacheBundle__All';
 
     protected $Namespace = null;
     protected $Options = null;
@@ -17,47 +22,10 @@ abstract class TagCacheAdapter {
 
     protected function buildKey($Key) {
         if ($this->Options['hashkey']) {
-            return md5($this->Namespace . ':' . $Key);
+            return md5("{$this->Namespace}:$Key");
         }
-        return $this->Namespace . ':' . $Key;
+        return "{$this->Namespace}:$Key";
     }
-
-    /**
-     * get Current Timestamp this is for debug use.
-     * @return integer
-     */
-    protected function getCurrentTimestamp() {
-        return time();
-    }
-
-    /**
-     * get CacheObjectContent
-     * @param mixed $TagCacheObj
-     * @return mixed
-     */
-    protected function getTagCacheObjContent($TagCacheObj) {
-        if (!($TagCacheObj instanceof TagCacheObj)) {
-            return $TagCacheObj;
-        }
-        if ($TagCacheObj->expire && ($TagCacheObj->expire < $this->getCurrentTimestamp())) {
-            return false;
-        }
-        if (is_array($TagCacheObj->Tags))
-            foreach ($TagCacheObj->Tags as $Tag) {
-                $TagTimestamp = $this->getTagUpdateTimestamp($Tag);
-                if ($TagTimestamp === false) {
-                    return false;
-                }
-                if ($TagTimestamp > $TagCacheObj->Timestamp) {
-                    return false;
-                }
-            }
-        return $TagCacheObj->Var;
-    }
-
-    abstract public function getTagUpdateTimestamp($Tag);
-
-    abstract public function getTags($Key);
 
     protected function getLockFile($Key) {
         $LockFileDir = $this->Options['cache_dir'] . DIRECTORY_SEPARATOR . 'LCK';
@@ -93,8 +61,7 @@ abstract class TagCacheAdapter {
         $LockFile = $this->getLockFile($Key);
         if (!isset($this->hLock[$LockFile])) {
             $hLock = fopen($LockFile, "w");
-        }
-        else {
+        } else {
             $hLock = $this->hLock[$LockFile];
             unset($this->hLock[$LockFile]);
         }
@@ -103,13 +70,123 @@ abstract class TagCacheAdapter {
         unlink($LockFile);
     }
 
-    abstract public function set($key, $var, $Tags = array(), $expire = null);
+    /**
+     * Store Cache
+     * @param string $key
+     * @param mixed $var
+     * @param array $Tags
+     * @param float $expire
+     */
+    public function set($key, $var, $Tags = array(), $expire = null) {
+        if ($expire) {
+            $expire+=TagCacheTime::time();
+        }
+        if (is_array($Tags)) {
+            array_push($Tags, self::TAG_CLEAR_ALL);
+            foreach ($Tags as $Tag) {
+                if ($this->getTagUpdateTimestamp($Tag) === false) {
+                    $this->setRaw($this->buildKey(self::TAG_PREFIX . $Tag), TagCacheTime::time());
+                }
+            }
+        }
+        $Obj = new TagCacheObj($var, $Tags, $expire);
+        return $this->setRaw($this->buildKey($key), $Obj, $expire);
+    }
 
-    abstract public function get($key);
+    /**
+     * get cache
+     * @param string $key
+     * @return mixed
+     */
+    public function get($key) {
+        $Obj = $this->getRaw($this->buildKey($key));
+        if ($Obj instanceof TagCacheObj) {
+            $Data = $Obj->getVar($this);
+            if ($Data === false) {
+                $this->delete($key);
+            }
+            return $Data;
+        }
+        return $Obj;
+    }
 
-    abstract public function delete($key);
+    /**
+     * delete cache
+     * @param string $key
+     * @return bool
+     */
+    public function delete($key) {
+        return $this->deleteRaw($this->buildKey($key));
+    }
 
-    abstract public function TagDelete($Tag);
+    /**
+     * tag delete
+     * @param string $Tag
+     * @return bool
+     */
+    public function deleteTag($Tag) {
+        return $this->deleteRaw($this->buildKey(self::TAG_PREFIX . $Tag));
+    }
 
-    abstract public function clear();
+    /**
+     * clear all cache
+     * @return bool
+     */
+    public function clear() {
+        return $this->deleteTag(self::TAG_CLEAR_ALL);
+    }
+
+    /**
+     * get tag updated timestamp
+     * @param string $key
+     * @return float
+     */
+    public function getTagUpdateTimestamp($tag) {
+        return $this->getRaw($this->buildKey(self::TAG_PREFIX . $tag));
+    }
+
+    /**
+     * get tags
+     * @param type $key
+     * @return boolean
+     */
+    public function getTags($key) {
+        $Obj = $this->getRaw($this->buildKey($key));
+        if ($Obj instanceof TagCacheObj) {
+            return $Obj->getTags();
+        }
+        return array();
+    }
+
+    /**
+     * increment a key
+     * @param type $key
+     * @param type $expire
+     * @return boolean
+     */
+    public function inc($key, $expire = 0) {
+        $this->getLock($key);
+        $this->set($key,(int)$this->get($key)+1);
+        $this->releaseLock($key);
+        return true;
+    }
+
+    /**
+     * decrement a key
+     * @param type $key
+     * @param type $expire
+     * @return boolean
+     */
+    public function dec($key, $expire = 0) {
+        $this->getLock($key);
+        $this->set($key,(int)$this->get($key)-1);
+        $this->releaseLock($key);
+        return true;
+    }
+
+    abstract protected function getRaw($key);
+
+    abstract protected function setRaw($key, $Obj, $expire);
+
+    abstract protected function deleteRaw($key);
 }

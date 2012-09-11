@@ -27,9 +27,9 @@ class File extends TagCacheAdapter {
      * Store Value to File.
      * @param string $Key
      */
-    protected function setRaw($Key, $Val) {
+    protected function setRaw($Key, $Val, $expire = 0) {
         $CacheFile = $this->getCacheFile($Key);
-        file_put_contents($CacheFile, serialize($Val));
+        return file_put_contents($CacheFile, serialize($Val)) > 0;
     }
 
     /**
@@ -55,58 +55,6 @@ class File extends TagCacheAdapter {
             return false;
         }
         return unserialize(file_get_contents($CacheFile));
-    }
-
-    public function getTagUpdateTimestamp($Tag) {
-        return $this->getRaw("TagCache:$Tag");
-    }
-
-    public function getTags($Key) {
-        $Obj = $this->getRaw($Key);
-        if ($Obj instanceof TagCacheObj) {
-            return $Obj->Tags;
-        }
-        return false;
-    }
-
-    public function set($Key, $var, $Tags = array(), $expire = null) {
-        if ($expire) {
-            $expire+=time();
-        }
-        if (is_array($Tags)) {
-            array_push($Tags, '__TagCache__All');
-            foreach ($Tags as $Tag) {
-                if ($this->getTagUpdateTimestamp($Tag) === false)
-                    $this->setRaw("TagCache:$Tag", time());
-            }
-        }
-        $Obj = new TagCacheObj($var, $Tags, $expire);
-        $this->setRaw($Key, $Obj);
-        return true;
-    }
-
-    public function get($Key) {
-        $Obj = $this->getRaw($Key);
-        if ($Obj instanceof TagCacheObj) {
-            $Data = $this->getTagCacheObjContent($Obj);
-            if ($Data === false){
-                $this->delete($Key);
-            }
-            return $Data;
-        }
-        return $Obj;
-    }
-
-    public function delete($Key) {
-        return $this->deleteRaw($Key);
-    }
-
-    public function TagDelete($Tag) {
-        return $this->deleteRaw("TagCache:$Tag");
-    }
-
-    public function clear() {
-        return $this->TagDelete('__TagCache__All');
     }
 
 }

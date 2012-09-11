@@ -9,7 +9,7 @@ class ApcTest extends BaseTagCacheAdapter {
 
     protected function setupCache($EnableLargeObject=false) {
         $this->Cache = new Apc(md5(microtime() . rand()), array(
-                    'cache_dir' => $_SERVER['SYMFONY'] . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'RickySu.TagCacheBundle',
+                    'cache_dir' => PROJECT_BASE . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'RickySu.TagCacheBundle',
                     'hashkey' => true,
                     'enable_largeobject'=>$EnableLargeObject,
                 ));

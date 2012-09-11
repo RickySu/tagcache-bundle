@@ -1,11 +1,12 @@
 <?php
 
-require_once $_SERVER['SYMFONY'] . '/vendor/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
+define('PROJECT_BASE',realpath(__DIR__.'/../../../../'));
+require_once  PROJECT_BASE . '/vendor/symfony/symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 
 $loader = new UniversalClassLoader();
-$loader->registerNamespace('Symfony', $_SERVER['SYMFONY']);
+$loader->registerNamespace('Symfony', PROJECT_BASE);
 $loader->register();
 
 spl_autoload_register(function($class)

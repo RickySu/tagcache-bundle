@@ -7,8 +7,9 @@ use RickySu\TagCacheBundle\TagCacheObj;
 
 class TestingTagCacheAdapter extends TagCacheAdapter {
 
-    public $CurrentTimestamp=null;
-    public $TagUpdateTimestamp=null;
+    public $CurrentTimestamp = null;
+    public $TagUpdateTimestamp = null;
+
     public function __construct($Namespace, $Options) {
         parent::__construct($Namespace, $Options);
     }
@@ -25,16 +26,12 @@ class TestingTagCacheAdapter extends TagCacheAdapter {
         return $this->buildKey($Key);
     }
 
-    public function getTagCacheObjContent($TagCacheObj) {
-        return parent::getTagCacheObjContent($TagCacheObj);
-    }
-
-    protected function getCurrentTimestamp(){
+    protected function getCurrentTimestamp() {
         return $this->CurrentTimestamp;
     }
 
     public function getTagUpdateTimestamp($Tag) {
-        return (isset($this->TagUpdateTimestamp[$Tag])?$this->TagUpdateTimestamp[$Tag]:false);
+        return (isset($this->TagUpdateTimestamp[$Tag]) ? $this->TagUpdateTimestamp[$Tag] : false);
     }
 
     public function getTags($Key) {
@@ -49,7 +46,7 @@ class TestingTagCacheAdapter extends TagCacheAdapter {
 
     }
 
-    public function set($key, $var, $Tags=array(), $expire=null) {
+    public function set($key, $var, $Tags = array(), $expire = null) {
 
     }
 
@@ -61,7 +58,19 @@ class TestingTagCacheAdapter extends TagCacheAdapter {
 
     }
 
-    public function TagDelete($Tag) {
+    public function deleteTag($Tag) {
+
+    }
+
+    public function setRaw($key, $Obj, $expire) {
+
+    }
+
+    public function getRaw($key) {
+
+    }
+
+    public function deleteRaw($key) {
 
     }
 
@@ -108,29 +117,29 @@ class TagCacheAdapterTest extends \PHPUnit_Framework_TestCase {
         );
     }
 
-    public function DataProvider_getTagCacheObjContent(){
-        $TagObjectString=md5(microtime().rand());
-        $TagObjectNoTag=new TagCacheObj(md5(microtime().rand()),array(),time()+10);
-        $TagObjectWithTag=new TagCacheObj(md5(microtime().rand()),array('TagA','TagB'));
+    public function DataProvider_getTagCacheObjContent() {
+        $TagObjectString = md5(microtime() . rand());
+        $TagObjectNoTag = new TagCacheObj(md5(microtime() . rand()), array(), time() + 10);
+        $TagObjectWithTag = new TagCacheObj(md5(microtime() . rand()), array('TagA', 'TagB'));
         return array(
-            array($TagObjectString,$TagObjectString,time(),array()),
-            array($TagObjectNoTag->Var,$TagObjectNoTag,time(),array()),  //Not Expired
-            array(false,$TagObjectNoTag,time()+30,array()),              //Expired
-            array($TagObjectWithTag->Var,$TagObjectWithTag,null,array(
-                'TagA'=>time()-10,
-                'TagB'=>time()-10,
-            )),              //not Expired
-            array(false,$TagObjectWithTag,null,array(
-                'TagA'=>time()+1,
-                'TagB'=>time(),
-            )),              //Expired
-            array(false,$TagObjectWithTag,null,array(
-                'TagA'=>time()+1,
-                'TagB'=>time()+2,
-            )),              //Expired
-            array(false,$TagObjectWithTag,null,array(
-                'TagB'=>time()-10,
-            )),              //Expired
+            array($TagObjectString, $TagObjectString, time(), array()),
+            array($TagObjectNoTag->Var, $TagObjectNoTag, time(), array()), //Not Expired
+            array(false, $TagObjectNoTag, time() + 30, array()), //Expired
+            array($TagObjectWithTag->Var, $TagObjectWithTag, null, array(
+                    'TagA' => time() - 10,
+                    'TagB' => time() - 10,
+            )), //not Expired
+            array(false, $TagObjectWithTag, null, array(
+                    'TagA' => time() + 1,
+                    'TagB' => time(),
+            )), //Expired
+            array(false, $TagObjectWithTag, null, array(
+                    'TagA' => time() + 1,
+                    'TagB' => time() + 2,
+            )), //Expired
+            array(false, $TagObjectWithTag, null, array(
+                    'TagB' => time() - 10,
+            )), //Expired
         );
     }
 
@@ -161,12 +170,12 @@ class TagCacheAdapterTest extends \PHPUnit_Framework_TestCase {
      *
      * @dataProvider DataProvider_getTagCacheObjContent
      */
-    public function testgetTagCacheObjContent($Expected,$TagCacheObj,$Timestamp,$Tags) {
+    public function testgetTagCacheObjContent($Expected, $TagCacheObj, $Timestamp, $Tags) {
         $Namespace = md5(microtime() . rand());
         $TestingTagCacheAdapter = new TestingTagCacheAdapter($Namespace, array('hashkey' => false));
-        $TestingTagCacheAdapter->CurrentTimestamp=$Timestamp;
-        $TestingTagCacheAdapter->TagUpdateTimestamp=$Tags;
-        $this->assertEquals($Expected,$TestingTagCacheAdapter->getTagCacheObjContent($TagCacheObj));
+        $TestingTagCacheAdapter->CurrentTimestamp = $Timestamp;
+        $TestingTagCacheAdapter->TagUpdateTimestamp = $Tags;
+        $this->assertEquals($Expected, $TestingTagCacheAdapter->getTagCacheObjContent($TagCacheObj));
     }
 
     protected function tearDown() {
