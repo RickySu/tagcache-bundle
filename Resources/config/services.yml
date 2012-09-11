@@ -1,17 +1,17 @@
 parameters:
-    tag_cache.factory:             RickySu\TagCacheBundle\TagCacheFactory
-    tag_cache.TagCache.Adapter:    RickySu\TagCacheBundle\TagCache\TagCacheAdapter
+    tagcache.factory:             RickySu\TagcacheBundle\TagcacheFactory
+    tagcache.Tagcache.Adapter:    RickySu\TagcacheBundle\Tagcache\TagcacheAdapter
 
 services:
-        tag_cache:
-            class:                 %tag_cache.TagCache.Adapter%
-            factory_class:         %tag_cache.factory%
+        tagcache:
+            class:                 %tagcache.Tagcache.Adapter%
+            factory_class:         %tagcache.factory%
             factory_method:        getInstance
             arguments:
-                -                  %tag_cache%
+                -                  %tagcache%
         action_cache_listener_service:
-            class:                 RickySu\TagCacheBundle\EventListener\ActionCacheListener
-            arguments:             ['@service_container','@controller_resolver',%tag_cache%]
+            class:                 RickySu\TagcacheBundle\EventListener\ActionCacheListener
+            arguments:             ['@service_container','@controller_resolver',%tagcache%]
             tags:
                  #request lower priority
                  #response higher priority

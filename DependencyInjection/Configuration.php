@@ -1,6 +1,6 @@
 <?php
 
-namespace RickySu\TagCacheBundle\DependencyInjection;
+namespace RickySu\TagcacheBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -18,16 +18,17 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('tag_cache');
+        $rootNode = $treeBuilder->root('tagcache');
         $rootNode
             ->children()
                 ->scalarNode('driver')->defaultValue('File')->end()
                 ->scalarNode('namespace')->defaultValue('%kernel.cache_dir%')->end()
+                ->scalarNode('debug')->defaultValue(false)->end()
                 ->arrayNode('options')->addDefaultsIfNotSet()
                     ->children()
                         ->booleanNode('enable_largeobject')->defaultValue(false)->end()
                         ->booleanNode('hashkey')->defaultValue(false)->end()
-                        ->scalarNode('cache_dir')->defaultValue('%kernel.cache_dir%'.DIRECTORY_SEPARATOR.'RickySu.TagCacheBundle')->end()
+                        ->scalarNode('cache_dir')->defaultValue('%kernel.cache_dir%'.DIRECTORY_SEPARATOR.'RickySu.TagcacheBundle')->end()
                         ->arrayNode('servers')
                             ->useAttributeAsKey('servers')->prototype('scalar')->end()
                         ->end()

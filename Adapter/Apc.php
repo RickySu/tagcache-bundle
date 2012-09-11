@@ -1,10 +1,10 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Adapter;
+namespace RickySu\TagcacheBundle\Adapter;
 
-use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
+use RickySu\TagcacheBundle\Adapter\TagcacheAdapter;
 
-class Apc extends TagCacheAdapter
+class Apc extends TagcacheAdapter
 {
     const APC_OBJ_MAXSIZE = 1024000;
 

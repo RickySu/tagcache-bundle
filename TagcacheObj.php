@@ -1,8 +1,8 @@
 <?php
 
-namespace RickySu\TagCacheBundle;
+namespace RickySu\TagcacheBundle;
 
-class TagCacheObj
+class TagcacheObj
 {
     public $Var;
     public $Tags;
@@ -19,13 +19,13 @@ class TagCacheObj
     {
         $this->Var = $Var;
         $this->Tags = $Tags;
-        $this->Timestamp = TagCacheTime::time();
+        $this->Timestamp = TagcacheTime::time();
         $this->expire = $expire;
     }
 
     public function getVar($CacheAdapter)
     {
-        if ($this->expire && ($this->expire < TagCacheTime::time())) {
+        if ($this->expire && ($this->expire < TagcacheTime::time())) {
             return false;
         }
         if (is_array($this->Tags))

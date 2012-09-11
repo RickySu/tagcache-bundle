@@ -1,17 +1,17 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Tests\Adapter;
+namespace RickySu\TagcacheBundle\Tests\Adapter;
 
-use RickySu\TagCacheBundle\Tests\Adapter\BaseTagCacheAdapter;
-use RickySu\TagCacheBundle\Adapter\File;
+use RickySu\TagcacheBundle\Tests\Adapter\BaseTagcacheAdapter;
+use RickySu\TagcacheBundle\Adapter\File;
 
-class FileTest extends BaseTagCacheAdapter
+class FileTest extends BaseTagcacheAdapter
 {
     protected function setupCache()
     {
         $this->Cache = new File(md5(microtime() . rand()), array(
                     'hashkey' => true,
-                    'cache_dir' => PROJECT_BASE . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'RickySu.TagCacheBundle',
+                    'cache_dir' => PROJECT_BASE . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'RickySu.TagcacheBundle',
                 ));
     }
 

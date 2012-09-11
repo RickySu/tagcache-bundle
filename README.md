@@ -1,4 +1,4 @@
-TagCacheBundle
+TagcacheBundle
 ==============
 
 Introduction
@@ -25,15 +25,15 @@ Download the code by adding the git module or editing the deps file in the root 
 ### Download via git submodule
 
 ```
-git submodule add http://github.com/RickySu/TagCacheBundle.git vendor/bundles/RickySu/TagCacheBundle
+git submodule add http://github.com/RickySu/TagcacheBundle.git vendor/bundles/RickySu/TagcacheBundle
 ```
 
 ### Download by editing deps file
 
 ```
-[TagCacheBundle]
-    git=http://github.com/RickySu/TagCacheBundle.git
-    target=/bundles/RickySu/TagCacheBundle
+[TagcacheBundle]
+    git=http://github.com/RickySu/TagcacheBundle.git
+    target=/bundles/RickySu/TagcacheBundle
 ```
 
 ### Register namespace :
@@ -56,7 +56,7 @@ public function registerBundles()
 {
    $bundles = array(
         // ...
-        new RickySu\TagCacheBundle\TagCacheBundle(),
+        new RickySu\TagcacheBundle\TagcacheBundle(),
    );
 }
 ```
@@ -67,8 +67,8 @@ Configuration
 ### Configure cache adapter
 
 ```yml
-// app/config.yml
-tag_cache:
+// app/config/config.yml
+tagcache:
     driver:     Memcache
     namespace:  'Name_Space_For_Your_Project'
     options:
@@ -100,29 +100,29 @@ Memcache server configs. format => "Host:Port:Weight"
 How to Use
 ----------
 
-### Using TagCache for storing data.
+### Using Tagcache for storing data.
 
 ```php
 <?php
-$TagCache=$container->get('tag_cache');
+$Tagcache=$container->get('tagcache');
 
 //store cache with Tags:{TagA,TagB} for 300 secs.
-$TagCache->set('Key_For_Store','Data_For_Store',array('TagA','TagB'),300);
+$Tagcache->set('Key_For_Store','Data_For_Store',array('TagA','TagB'),300);
 
 //get cache.
-$TagCache->get('Key_For_Store');
+$Tagcache->get('Key_For_Store');
 
 //delete cache.
-$TagCache->delete('Key_For_Store');
+$Tagcache->delete('Key_For_Store');
 
 //delete cache by Tag.
-$TagCache->TagDelete('TagA');
+$Tagcache->TagDelete('TagA');
 
 //acquire a lock.If a lock already exists,It will be blocked for 5 secs.
-$TagCache->getLock('Your_Lock_Name',5);
+$Tagcache->getLock('Your_Lock_Name',5);
 
 //release a lock.
-$TagCache->releaseLock('Your_Lock_Name');
+$Tagcache->releaseLock('Your_Lock_Name');
 ```
 
 ### Controller Cache
@@ -133,28 +133,28 @@ $TagCache->releaseLock('Your_Lock_Name');
 //in Controller
 namespace Acme\DemoBundle\Controller;
 
-// these import the "@TagCache" annotations
-use RickySu\TagCacheBundle\Configuration\TagCache;
+// these import the "@Tagcache" annotations
+use RickySu\TagcacheBundle\Configuration\Tagcache;
 
 class DemoController extends Controller
 {
     /**
      * @Route("/hello/{name}", name="_demo_hello")
-     * @TagCache(expires=600,cache=true)
+     * @Tagcache(expires=600,cache=true)
      * @Template()
      */
     public function helloAction($name)
-    {  
+    {
         return array('name' => $name);
     }
 
     /**
      * @Route("/test", name="_demo_test")
-     * @TagCache(expires=600,tags={"TagA","TagB"},cachekey=custom_cache_key,cache=true)
+     * @Tagcache(expires=600,tags={"TagA","TagB"},cachekey=custom_cache_key,cache=true)
      * @Template()
      */
     public function testAction()
-    {  
+    {
         return;
     }
 }
@@ -165,7 +165,7 @@ class DemoController extends Controller
 ```html+jinja
 {#in view render a controller#}
 {%render 'AcmeDemoBundle:Demo:test' with {
-     '_TagCache':    {
+     '_Tagcache':    {
            'key':    'my_custom_cache_key',
            'tags':   {'TagC','TagD'},
            'expires': 300
@@ -175,7 +175,7 @@ class DemoController extends Controller
 
 #### Note
 
-If you both define cache params in view and controller. _TagCache in view will overwrite controller annotations.
+If you both define cache params in view and controller. _Tagcache in view will overwrite controller annotations.
 But remember,controller annotation config "cache" must set to true,If you want to turn on controller cache.
 
 TODO

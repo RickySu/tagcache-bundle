@@ -1,0 +1,40 @@
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script>
+if (typeof jQuery == 'undefined') {
+   google.load("jquery", "1.4.2");
+   google.setOnLoadCallback(TagcacheInit);
+}
+else{
+   $(function(){
+       TagcacheInit();
+   });
+}
+function TagcacheInit(){
+    $('.TagcacheDebugPanel').each(function(index,obj){
+        var Panel=$(obj);
+        var Content=Panel.find('.content');
+        var width=Content.width();
+        var height=Content.height();
+        var position=Panel.next().position();
+        Panel.next().replaceWith(Content.html());
+        Content.remove();
+        $('body').prepend(Panel);
+        Panel.css('left',position.left-1);
+        Panel.css('top',position.top-1);
+        Panel.css('width',width);
+        Panel.css('height',height);
+    });
+}
+function TagcacheDebugPanelClose(id)
+{
+    $('#TagcacheDebug_'+id).remove();
+}
+function TagcacheDebugPanelToggle(element)
+{
+  if (typeof element == 'string')
+    element = document.getElementById(element);
+
+  if (element)
+    element.style.display = element.style.display == 'none' ? '' : 'none';
+}
+</script>

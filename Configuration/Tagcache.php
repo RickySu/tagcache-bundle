@@ -1,6 +1,6 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Configuration;
+namespace RickySu\TagcacheBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
 /**
@@ -9,7 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
  * @author Fabien Potencier <fabien@symfony.com>
  * @Annotation
  */
-class TagCache extends ConfigurationAnnotation
+class Tagcache extends ConfigurationAnnotation
 {
     /**
      * The expiration date as a valid date for the strtotime() function.

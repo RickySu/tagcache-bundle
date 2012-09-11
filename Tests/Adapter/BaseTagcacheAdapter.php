@@ -1,10 +1,10 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Tests\Adapter;
+namespace RickySu\TagcacheBundle\Tests\Adapter;
 
-use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
+use RickySu\TagcacheBundle\Adapter\TagcacheAdapter;
 
-abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase
+abstract class BaseTagcacheAdapter extends \PHPUnit_Framework_TestCase
 {
     protected $Cache;
     protected $StaticsetTestData = null;
@@ -15,7 +15,7 @@ abstract class BaseTagCacheAdapter extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return TagCacheAdapter;
+     * @return TagcacheAdapter;
      */
     abstract protected function setupCache();
 

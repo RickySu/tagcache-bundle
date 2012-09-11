@@ -1,10 +1,10 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Adapter;
+namespace RickySu\TagcacheBundle\Adapter;
 
-use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
+use RickySu\TagcacheBundle\Adapter\TagcacheAdapter;
 
-class File extends TagCacheAdapter
+class File extends TagcacheAdapter
 {
     protected $CacheBaseDir;
 

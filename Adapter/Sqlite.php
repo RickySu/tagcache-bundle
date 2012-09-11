@@ -1,12 +1,12 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Adapter;
+namespace RickySu\TagcacheBundle\Adapter;
 
-use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
-use RickySu\TagCacheBundle\TagCacheObj;
+use RickySu\TagcacheBundle\Adapter\TagcacheAdapter;
+use RickySu\TagcacheBundle\TagcacheObj;
 use \PDO;
 
-class Sqlite extends TagCacheAdapter
+class Sqlite extends TagcacheAdapter
 {
     protected $Sqlite, $DBFile;
 
@@ -49,7 +49,7 @@ class Sqlite extends TagCacheAdapter
         $Res = $this->Sqlite->query($sql);
         $Row = $Res->fetch(PDO::FETCH_ASSOC);
         $Obj = unserialize($Row['cachedata']);
-        if ($Obj instanceof TagCacheObj) {
+        if ($Obj instanceof TagcacheObj) {
             return $Obj->Tags;
         }
 
@@ -74,7 +74,7 @@ class Sqlite extends TagCacheAdapter
                 $this->Sqlite->exec($sql);
             }
         }
-        $Obj = new TagCacheObj($var, $Tags, $expire);
+        $Obj = new TagcacheObj($var, $Tags, $expire);
         $sql = "delete from CacheData where cachekey='$KeyHash';";
         $this->Sqlite->exec($sql);
         $sql = "insert into CacheData(cachekey,cachedata,createdate) values(?,?,?);";
@@ -91,7 +91,7 @@ class Sqlite extends TagCacheAdapter
         $Res = $this->Sqlite->query($sql);
         $Row = $Res->fetch(PDO::FETCH_ASSOC);
         $Obj = unserialize($Row['cachedata']);
-        if ($Obj instanceof TagCacheObj) {
+        if ($Obj instanceof TagcacheObj) {
             $Data = $Obj->getVar($this);
             if ($Data === false) {
                 $this->delete($Key);

@@ -10,7 +10,7 @@ $loader->registerNamespace('Symfony', PROJECT_BASE);
 $loader->register();
 
 spl_autoload_register(function($class) {
-    if (0 === strpos($class, 'RickySu\\TagCacheBundle\\')) {
+    if (0 === strpos($class, 'RickySu\\TagcacheBundle\\')) {
         $path = implode('/', array_slice(explode('\\', $class), 2)).'.php';
         require_once __DIR__.'/../'.$path;
 

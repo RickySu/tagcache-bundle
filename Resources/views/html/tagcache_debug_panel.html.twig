@@ -1,0 +1,21 @@
+<div class="TagcacheDebugPanel" id="TagcacheDebug_{{uniqueid}}">
+    <div class='caption {{CacheHit?'TagcacheInfoHit':'TagcacheInfoNew'}}'>
+        <div style="height: 16px; padding: 2px;">
+            <a href="" onclick="TagcacheDebugPanelToggle('TagcacheDebugPanel_info_{{uniqueid}}');return false;"><strong>cache information</strong></a>
+            <a href="" onclick="TagcacheDebugPanelClose('{{uniqueid}}');return false;"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAA5ElEQVR42tRTQYoEIQwsl/2Bl3gQoY9eBKEf5kvyG8G7h4Z+S38gIu5lp5lZ2R7YPm1BDhZJSFWiGmPgDj5wE7cbfD4/mBkAHprUj9yTTyn9OsGIMSLG+Fxwxc8SiAi9d4QQHskjhIDeO4jorQcq5wwiQmsN3nt479FaAxEh5zxJmyZIKalSClprL1FKQUpJXZr4DBH52xqZeRhjICKw1sJaCxGBMQbMPN41GFpriAicc6i1otYK5xxEBFrraQuThGVZAADbtp2amXms6woAOI7j0gO17/t5MN+HNfEvBf//M30NAKe7aRqUOIlfAAAAAElF" alt="close"></a>
+        </div>
+        <div id="TagcacheDebugPanel_info_{{uniqueid}}" style="padding: 2px;display:none;">
+            <div>[controller] {{CacheContent.Controller}}</div>
+            <div>[cache key] {{CacheContent.Key}}</div>
+            <div>[cache tags]
+                {% for tag in CacheContent.Tags %}
+                <div style="padding: 0 0 0 20px;">{{tag}}</div>
+                {% endfor %}
+            </div>
+            <div>[life time] {{CacheContent.Expires}} seconds</div>
+            <div>[last modify] {{CacheContent.lastmodify}} seconds</div>
+        </div>
+    </div>
+    <div class="content">{{CacheContent.Content|raw}}</div>
+</div>
+<div></div>

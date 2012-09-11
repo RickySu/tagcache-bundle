@@ -1,15 +1,15 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Adapter;
+namespace RickySu\TagcacheBundle\Adapter;
 
-use RickySu\TagCacheBundle\TagCacheObj;
-use RickySu\TagCacheBundle\TagCacheTime;
+use RickySu\TagcacheBundle\TagcacheObj;
+use RickySu\TagcacheBundle\TagcacheTime;
 
-abstract class TagCacheAdapter
+abstract class TagcacheAdapter
 {
-    const TAG_PREFIX = 'TagCacheBundle#Tag';
-    const LOCK_PREFIX = 'TagCacheBundle#Lock';
-    const TAG_CLEAR_ALL = '__TagCacheBundle__All';
+    const TAG_PREFIX = 'TagcacheBundle#Tag';
+    const LOCK_PREFIX = 'TagcacheBundle#Lock';
+    const TAG_CLEAR_ALL = '__TagcacheBundle__All';
 
     protected $Namespace = null;
     protected $Options = null;
@@ -87,17 +87,17 @@ abstract class TagCacheAdapter
     public function set($key, $var, $Tags = array(), $expire = null)
     {
         if ($expire) {
-            $expire+=TagCacheTime::time();
+            $expire+=TagcacheTime::time();
         }
         if (is_array($Tags)) {
             array_push($Tags, self::TAG_CLEAR_ALL);
             foreach ($Tags as $Tag) {
                 if ($this->getTagUpdateTimestamp($Tag) === false) {
-                    $this->setRaw($this->buildKey(self::TAG_PREFIX . $Tag), TagCacheTime::time());
+                    $this->setRaw($this->buildKey(self::TAG_PREFIX . $Tag), TagcacheTime::time());
                 }
             }
         }
-        $Obj = new TagCacheObj($var, $Tags, $expire);
+        $Obj = new TagcacheObj($var, $Tags, $expire);
 
         return $this->setRaw($this->buildKey($key), $Obj, $expire);
     }
@@ -110,7 +110,7 @@ abstract class TagCacheAdapter
     public function get($key)
     {
         $Obj = $this->getRaw($this->buildKey($key));
-        if ($Obj instanceof TagCacheObj) {
+        if ($Obj instanceof TagcacheObj) {
             $Data = $Obj->getVar($this);
             if ($Data === false) {
                 $this->delete($key);
@@ -169,7 +169,7 @@ abstract class TagCacheAdapter
     public function getTags($key)
     {
         $Obj = $this->getRaw($this->buildKey($key));
-        if ($Obj instanceof TagCacheObj) {
+        if ($Obj instanceof TagcacheObj) {
             return $Obj->getTags();
         }
 

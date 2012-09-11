@@ -1,10 +1,10 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Adapter;
+namespace RickySu\TagcacheBundle\Adapter;
 
-use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
+use RickySu\TagcacheBundle\Adapter\TagcacheAdapter;
 
-class Memcached extends TagCacheAdapter
+class Memcached extends TagcacheAdapter
 {
     protected $Memcached = null;
 

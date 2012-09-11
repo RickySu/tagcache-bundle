@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "description": "This bundle provides cache with tags and controller cache",
     "keywords": ["rickysu", "tag", "cache"],
-    "homepage": "https://github.com/RickySu/TagCacheBundle",
+    "homepage": "https://github.com/RickySu/TagcacheBundle",
     "license": "MIT",
     "authors": [
         {
@@ -16,7 +16,7 @@
         "sensio/framework-extra-bundle":  "*"
     },
     "autoload": {
-        "psr-0": { "RickySu\\TagCacheBundle": "" }
+        "psr-0": { "RickySu\\TagcacheBundle": "" }
     },
-    "target-dir": "RickySu/TagCacheBundle"
+    "target-dir": "RickySu/TagcacheBundle"
 }

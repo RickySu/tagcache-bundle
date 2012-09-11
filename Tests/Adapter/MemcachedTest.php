@@ -1,11 +1,11 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Tests\Adapter;
+namespace RickySu\TagcacheBundle\Tests\Adapter;
 
-use RickySu\TagCacheBundle\Tests\Adapter\BaseTagCacheAdapter;
-use RickySu\TagCacheBundle\Adapter\Memcached;
+use RickySu\TagcacheBundle\Tests\Adapter\BaseTagcacheAdapter;
+use RickySu\TagcacheBundle\Adapter\Memcached;
 
-class MemcachedTest extends BaseTagCacheAdapter
+class MemcachedTest extends BaseTagcacheAdapter
 {
     protected function setupCache($EnableLargeObject=false)
     {

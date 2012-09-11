@@ -1,10 +1,10 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Adapter;
+namespace RickySu\TagcacheBundle\Adapter;
 
-use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
+use RickySu\TagcacheBundle\Adapter\TagcacheAdapter;
 
-class Nullcache extends TagCacheAdapter
+class Nullcache extends TagcacheAdapter
 {
     public function __construct($NameSpace, $Options)
     {

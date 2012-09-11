@@ -1,11 +1,11 @@
 <?php
 
-namespace RickySu\TagCacheBundle\Tests\Adapter;
+namespace RickySu\TagcacheBundle\Tests\Adapter;
 
-use RickySu\TagCacheBundle\Adapter\TagCacheAdapter;
-use RickySu\TagCacheBundle\TagCacheObj;
+use RickySu\TagcacheBundle\Adapter\TagcacheAdapter;
+use RickySu\TagcacheBundle\TagcacheObj;
 
-class TestingTagCacheAdapter extends TagCacheAdapter
+class TestingTagcacheAdapter extends TagcacheAdapter
 {
     public $CurrentTimestamp = null;
     public $TagUpdateTimestamp = null;
@@ -86,9 +86,9 @@ class TestingTagCacheAdapter extends TagCacheAdapter
 
 }
 
-class TagCacheAdapterTest extends \PHPUnit_Framework_TestCase
+class TagcacheAdapterTest extends \PHPUnit_Framework_TestCase
 {
-    protected $TestingTagCacheAdapter;
+    protected $TestingTagcacheAdapter;
     protected $Namespace = null;
     protected $Options = null;
 
@@ -125,11 +125,11 @@ class TagCacheAdapterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function DataProvider_getTagCacheObjContent()
+    public function DataProvider_getTagcacheObjContent()
     {
         $TagObjectString = md5(microtime() . rand());
-        $TagObjectNoTag = new TagCacheObj(md5(microtime() . rand()), array(), time() + 10);
-        $TagObjectWithTag = new TagCacheObj(md5(microtime() . rand()), array('TagA', 'TagB'));
+        $TagObjectNoTag = new TagcacheObj(md5(microtime() . rand()), array(), time() + 10);
+        $TagObjectWithTag = new TagcacheObj(md5(microtime() . rand()), array('TagA', 'TagB'));
 
         return array(
             array($TagObjectString, $TagObjectString, time(), array()),
@@ -163,9 +163,9 @@ class TagCacheAdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function test__construct($Namespace, $Options)
     {
-        $TestingTagCacheAdapter = new TestingTagCacheAdapter($Namespace, $Options);
-        $this->assertEquals($Namespace, $TestingTagCacheAdapter->getNamespace());
-        $this->assertEquals($Options, $TestingTagCacheAdapter->getOptions());
+        $TestingTagcacheAdapter = new TestingTagcacheAdapter($Namespace, $Options);
+        $this->assertEquals($Namespace, $TestingTagcacheAdapter->getNamespace());
+        $this->assertEquals($Options, $TestingTagcacheAdapter->getOptions());
     }
 
     /**
@@ -174,8 +174,8 @@ class TagCacheAdapterTest extends \PHPUnit_Framework_TestCase
      */
     public function testbuildKey($Namespace, $Options, $Key, $Expeted, $Message)
     {
-        $TestingTagCacheAdapter = new TestingTagCacheAdapter($Namespace, $Options);
-        $this->assertEquals($Expeted, $TestingTagCacheAdapter->getbuildKey($Key), $Message);
+        $TestingTagcacheAdapter = new TestingTagcacheAdapter($Namespace, $Options);
+        $this->assertEquals($Expeted, $TestingTagcacheAdapter->getbuildKey($Key), $Message);
     }
 
     protected function tearDown()
