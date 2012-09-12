@@ -25,7 +25,7 @@ editing the composer.json file in the root project.
 ### Editing the composer.json under require: {} section add
 
 ```
-"rickysu/tagcache-bundle": "*",
+"rickysu/tagcache-bundle": "0.1.*",
 ```
 ### Update Bundle :
 
