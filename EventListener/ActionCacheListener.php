@@ -13,8 +13,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use RickySu\TagcacheBundle\Configuration\Tagcache as TagcacheConfigurationAnnotation;
 
-class ActionCacheListener {
-
+class ActionCacheListener
+{
+    const TAG_VIEW_CACHE='Tag:View';
     /**
      * @var Symfony\Component\DependencyInjection\ContainerInterface
      */
@@ -34,7 +35,8 @@ class ActionCacheListener {
      *
      * @param ContainerInterface $container The service container instance
      */
-    public function __construct(ContainerInterface $container, $Resolver, $Config) {
+    public function __construct(ContainerInterface $container, $Resolver, $Config)
+    {
         $this->Container = $container;
         $this->Tagcache = $container->get('tagcache');
         $this->Reader = $container->get('annotation_reader');
@@ -42,7 +44,8 @@ class ActionCacheListener {
         $this->Config = $Config;
     }
 
-    protected function loadAnnotationConfig($Event) {
+    protected function loadAnnotationConfig($Event)
+    {
         if (!($Controller = $this->Resolver->getController($Event->getRequest()))) {
             return array();
         }
@@ -68,7 +71,8 @@ class ActionCacheListener {
         return array();
     }
 
-    protected function getTagcacheConfig($Event) {
+    protected function getTagcacheConfig($Event)
+    {
         if (!($TagcacheConfig = $Event->getRequest()->attributes->get('Tagcache'))) {
             $TagcacheConfig = $this->loadAnnotationConfig($Event);
         }
@@ -87,7 +91,8 @@ class ActionCacheListener {
      *
      * @param Event $event
      */
-    public function handleRequest(GetResponseEvent $Event) {
+    public function handleRequest(GetResponseEvent $Event)
+    {
         if (!($TagcacheConfig = $this->getTagcacheConfig($Event))) {
             return;
         }
@@ -96,11 +101,13 @@ class ActionCacheListener {
                 return;
             }
             $Event->setResponse(new TagcacheResponse($this->renderCacheContent($CacheContent)));
+
             return;
         }
     }
 
-    public function handleResponse(FilterResponseEvent $Event) {
+    public function handleResponse(FilterResponseEvent $Event)
+    {
         if (HttpKernelInterface::MASTER_REQUEST === $Event->getRequestType()) {
             $this->injectAssets($Event->getResponse());
         }
@@ -108,29 +115,39 @@ class ActionCacheListener {
             return;
         }
         if (!($Event->getResponse() instanceof TagcacheResponse)) {
+            $Tags=is_array($TagcacheConfig['tags'])?$TagcacheConfig['tags']:array();
+            array_push($Tags, $this->buildViewCacheTag());
             $CacheContent = array(
                 'Key' => $TagcacheConfig['key'],
                 'Expires' => $TagcacheConfig['expires'],
-                'Tags' => $TagcacheConfig['tags'],
+                'Tags' => $Tags,
                 'CreatedAt' => time(),
                 'Content' => $Event->getResponse()->getContent(),
                 'Controller' => $Event->getRequest()->get('_controller'),
             );
-            $this->Tagcache->set($TagcacheConfig['key'], $CacheContent, $TagcacheConfig['expires']);
+            $this->Tagcache->set($TagcacheConfig['key'], $CacheContent,$CacheContent['Tags'], $TagcacheConfig['expires']);
             $Event->getResponse()->setContent($this->renderCacheContent($CacheContent, false));
         }
     }
 
-    protected function renderCacheContent($CacheContent, $CacheHit = true) {
+    protected function buildViewCacheTag()
+    {
+        return self::TAG_VIEW_CACHE.':'.($this->Config['debug']?'Dev':'Prod');
+    }
+
+    protected function renderCacheContent($CacheContent, $CacheHit = true)
+    {
         if (!$this->Config['debug']) {
             return $CacheContent['Content'];
         }
         $CacheContent['lastmodify']=time()-$CacheContent['CreatedAt'];
         $Twig=$this->Container->get('twig');
+
         return $Twig->render('TagcacheBundle:html:tagcache_debug_panel.html.twig',array('CacheHit'=>$CacheHit,'CacheContent'=>$CacheContent,'uniqueid'=>md5(microtime().rand())));
     }
 
-    protected function injectAssets(Response $Response){
+    protected function injectAssets(Response $Response)
+    {
         $Twig=$this->Container->get('twig');
         $Content=$Response->getContent();
         if (function_exists('mb_stripos')) {

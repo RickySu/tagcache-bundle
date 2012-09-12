@@ -1,11 +1,16 @@
 parameters:
-    tagcache.factory:             RickySu\TagcacheBundle\TagcacheFactory
-    tagcache.Tagcache.Adapter:    RickySu\TagcacheBundle\Tagcache\TagcacheAdapter
-
+    tagcache.factory.class:          RickySu\TagcacheBundle\TagcacheFactory
+    tagcache.adapter.class:          RickySu\TagcacheBundle\Tagcache\TagcacheAdapter
+    tagcache.cache_clearer.class:   RickySu\TagcacheBundle\TagcacheCacheClearer
 services:
+        tagcache_cache_clearer:
+            class:                  %tagcache.cache_clearer.class%
+            tags:
+                 -                  { name: kernel.cache_clearer }
+            arguments:             ['@service_container',%tagcache%]
         tagcache:
-            class:                 %tagcache.Tagcache.Adapter%
-            factory_class:         %tagcache.factory%
+            class:                  %tagcache.adapter.class%
+            factory_class:         %tagcache.factory.class%
             factory_method:        getInstance
             arguments:
                 -                  %tagcache%
