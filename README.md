@@ -20,31 +20,17 @@ Requirements
 Installation
 ------------
 
-Download the code by adding the git module or editing the deps file in the root project.
+editing the composer.json file in the root project.
 
-### Download via git submodule
-
-```
-git submodule add http://github.com/RickySu/TagcacheBundle.git vendor/bundles/RickySu/TagcacheBundle
-```
-
-### Download by editing deps file
+### Editing the composer.json under require: {} section add
 
 ```
-[TagcacheBundle]
-    git=http://github.com/RickySu/TagcacheBundle.git
-    target=/bundles/RickySu/TagcacheBundle
+"rickysu/tagcache-bundle": "*",
 ```
+### Update Bundle :
 
-### Register namespace :
-
-```php
-<?php
-// app/autoload.php
-$loader->registerNamespaces(array(
-   // ...
-   'RickySu'                       => __DIR__.'/../vendor/bundles',
-));
+```
+php composer.phar update
 ```
 
 ### Instantiate Bundle :
@@ -116,13 +102,21 @@ $Tagcache->get('Key_For_Store');
 $Tagcache->delete('Key_For_Store');
 
 //delete cache by Tag.
-$Tagcache->TagDelete('TagA');
+$Tagcache->deleteTag('TagA');
 
 //acquire a lock.If a lock already exists,It will be blocked for 5 secs.
 $Tagcache->getLock('Your_Lock_Name',5);
 
 //release a lock.
 $Tagcache->releaseLock('Your_Lock_Name');
+
+//increment a cache
+$Tagcache->inc('Key_For_increment');
+
+//decrement a cache
+$Tagcache->dec('Key_For_decrement');
+
+
 ```
 
 ### Controller Cache
@@ -181,8 +175,6 @@ But remember,controller annotation config "cache" must set to true,If you want t
 TODO
 ----
 
-* command line tools for clear cache.
-* debug information for controller cache.
 
 LICENSE
 -------
