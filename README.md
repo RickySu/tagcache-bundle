@@ -166,7 +166,7 @@ class DemoController extends Controller
 {#in view render a controller#}
 {%render 'AcmeDemoBundle:Demo:test' with {
      '_Tagcache':    {
-           'key':    'my_custom_cache_key',
+           'key':    'custom_cache_key',
            'tags':   {'TagC','TagD'},
            'expires': 300
      }
