@@ -3,7 +3,7 @@
     "type": "symfony-bundle",
     "description": "This bundle provides cache with tags and controller cache",
     "keywords": ["rickysu", "tag", "cache"],
-    "homepage": "https://github.com/RickySu/TagcacheBundle",
+    "homepage": "https://github.com/RickySu/tagcache-bundle",
     "license": "MIT",
     "authors": [
         {
