@@ -13,9 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use RickySu\TagcacheBundle\Configuration\Tagcache as TagcacheConfigurationAnnotation;
 
-class ActionCacheListener
-{
-    const TAG_VIEW_CACHE='Tag:View';
+class ActionCacheListener {
+
+    const TAG_VIEW_CACHE = 'Tag:View';
+
     /**
      * @var Symfony\Component\DependencyInjection\ContainerInterface
      */
@@ -35,8 +36,7 @@ class ActionCacheListener
      *
      * @param ContainerInterface $container The service container instance
      */
-    public function __construct(ContainerInterface $container, $Resolver, $Config)
-    {
+    public function __construct(ContainerInterface $container, $Resolver, $Config) {
         $this->Container = $container;
         $this->Tagcache = $container->get('tagcache');
         $this->Reader = $container->get('annotation_reader');
@@ -44,8 +44,7 @@ class ActionCacheListener
         $this->Config = $Config;
     }
 
-    protected function loadAnnotationConfig($Event)
-    {
+    protected function loadAnnotationConfig($Event) {
         if (!($Controller = $this->Resolver->getController($Event->getRequest()))) {
             return array();
         }
@@ -53,7 +52,7 @@ class ActionCacheListener
         $Method = $Object->getMethod($Controller[1]);
         foreach ($this->Reader->getMethodAnnotations($Method) as $Configuration) {
             if ($Configuration instanceof TagcacheConfigurationAnnotation) {
-                $TagcacheConfig = $Event->getRequest()->attributes->get('Tagcache');
+                $TagcacheConfig = $Event->getRequest()->attributes->get('tagcache');
                 $AnnotationConfig = $Configuration->getConfigs();
                 if (!is_array($TagcacheConfig)) {
                     $TagcacheConfig = array();
@@ -62,7 +61,7 @@ class ActionCacheListener
                 if (!isset($AnnotationConfig['cache']) || $AnnotationConfig['cache'] != true) {
                     $TagcacheConfig = array();
                 }
-                $Event->getRequest()->attributes->set('Tagcache', $TagcacheConfig);
+                $Event->getRequest()->attributes->set('tagcache', $TagcacheConfig);
 
                 return $TagcacheConfig;
             }
@@ -71,12 +70,19 @@ class ActionCacheListener
         return array();
     }
 
-    protected function getTagcacheConfig($Event)
-    {
-        if (!($TagcacheConfig = $Event->getRequest()->attributes->get('Tagcache'))) {
-            $TagcacheConfig = $this->loadAnnotationConfig($Event);
+    protected function getTagcacheConfig($Event) {
+        $DefaultConfig = array(
+            'cache' => true,
+            'tags' => array(),
+            'expires' => 600,
+        );
+        if (is_array($TagcacheConfig = $Event->getRequest()->attributes->get('tagcache'))) {
+            $TagcacheConfig = array_merge($DefaultConfig, $TagcacheConfig);
+        } else {
+            $TagcacheConfig = array('cache' => false);
         }
-        if (!isset($TagcacheConfig['cache']) || !$TagcacheConfig['cache']) {
+        $TagcacheConfig = array_merge($TagcacheConfig, $this->loadAnnotationConfig($Event));
+        if (!$TagcacheConfig['cache']) {
             return false;
         }
         if (!isset($TagcacheConfig['key'])) {
@@ -91,8 +97,7 @@ class ActionCacheListener
      *
      * @param Event $event
      */
-    public function handleRequest(GetResponseEvent $Event)
-    {
+    public function handleRequest(GetResponseEvent $Event) {
         if (!($TagcacheConfig = $this->getTagcacheConfig($Event))) {
             return;
         }
@@ -106,8 +111,7 @@ class ActionCacheListener
         }
     }
 
-    public function handleResponse(FilterResponseEvent $Event)
-    {
+    public function handleResponse(FilterResponseEvent $Event) {
         if (HttpKernelInterface::MASTER_REQUEST === $Event->getRequestType()) {
             $this->injectAssets($Event->getResponse());
         }
@@ -115,7 +119,7 @@ class ActionCacheListener
             return;
         }
         if (!($Event->getResponse() instanceof TagcacheResponse)) {
-            $Tags=is_array($TagcacheConfig['tags'])?$TagcacheConfig['tags']:array();
+            $Tags = is_array($TagcacheConfig['tags']) ? $TagcacheConfig['tags'] : array();
             array_push($Tags, $this->buildViewCacheTag());
             $CacheContent = array(
                 'Key' => $TagcacheConfig['key'],
@@ -125,47 +129,44 @@ class ActionCacheListener
                 'Content' => $Event->getResponse()->getContent(),
                 'Controller' => $Event->getRequest()->get('_controller'),
             );
-            $this->Tagcache->set($TagcacheConfig['key'], $CacheContent,$CacheContent['Tags'], $TagcacheConfig['expires']);
+            $this->Tagcache->set($TagcacheConfig['key'], $CacheContent, $CacheContent['Tags'], $TagcacheConfig['expires']);
             $Event->getResponse()->setContent($this->renderCacheContent($CacheContent, false));
         }
     }
 
-    protected function buildViewCacheTag()
-    {
-        return self::TAG_VIEW_CACHE.':'.($this->Config['debug']?'Dev':'Prod');
+    protected function buildViewCacheTag() {
+        return self::TAG_VIEW_CACHE . ':' . ($this->Config['debug'] ? 'dev' : 'prod');
     }
 
-    protected function renderCacheContent($CacheContent, $CacheHit = true)
-    {
+    protected function renderCacheContent($CacheContent, $CacheHit = true) {
         if (!$this->Config['debug']) {
             return $CacheContent['Content'];
         }
-        $CacheContent['lastmodify']=time()-$CacheContent['CreatedAt'];
-        $Twig=$this->Container->get('twig');
+        $CacheContent['lastmodify'] = time() - $CacheContent['CreatedAt'];
+        $Twig = $this->Container->get('twig');
 
-        return $Twig->render('TagcacheBundle:html:tagcache_debug_panel.html.twig',array('CacheHit'=>$CacheHit,'CacheContent'=>$CacheContent,'uniqueid'=>md5(microtime().rand())));
+        return $Twig->render('TagcacheBundle:html:tagcache_debug_panel.html.twig', array('CacheHit' => $CacheHit, 'CacheContent' => $CacheContent, 'uniqueid' => md5(microtime() . rand())));
     }
 
-    protected function injectAssets(Response $Response)
-    {
-        $Twig=$this->Container->get('twig');
-        $Content=$Response->getContent();
+    protected function injectAssets(Response $Response) {
+        $Twig = $this->Container->get('twig');
+        $Content = $Response->getContent();
         if (function_exists('mb_stripos')) {
-            $posrFunction   = 'mb_strripos';
-            $posFunction    = 'mb_stripos';
+            $posrFunction = 'mb_strripos';
+            $posFunction = 'mb_stripos';
             $substrFunction = 'mb_substr';
         } else {
-            $posrFunction   = 'strripos';
-            $posFunction    = 'stripos';
+            $posrFunction = 'strripos';
+            $posFunction = 'stripos';
             $substrFunction = 'substr';
         }
         $pos = $posrFunction($Content, '</head>');
         if (false !== $pos) {
-            $CSS=$Twig->render('TagcacheBundle:css:tagcache_debug_css.html.twig');
-            $JS=$Twig->render('TagcacheBundle:js:tagcache_debug_js.html.twig');
-            $Content = $substrFunction($Content, 0, $pos).$CSS.$JS.$substrFunction($Content, $pos);
+            $CSS = $Twig->render('TagcacheBundle:css:tagcache_debug_css.html.twig');
+            $JS = $Twig->render('TagcacheBundle:js:tagcache_debug_js.html.twig');
+            $Content = $substrFunction($Content, 0, $pos) . $CSS . $JS . $substrFunction($Content, $pos);
             $Response->setContent($Content);
         }
-
     }
+
 }

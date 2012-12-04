@@ -17,7 +17,7 @@ class TagcacheCacheClearer implements CacheClearerInterface
     public function clear($cacheDir)
     {
         $TagCache=$this->Container->get('tagcache');
-        $TagCache->deleteTag('Tag:View'.':'.($this->Config['debug']?'Dev':'Prod'));
+        $TagCache->deleteTag('Tag:View'.':'.($this->Config['debug']?'dev':'prod'));
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace RickySu\TagcacheBundle;
 
-use RickySu\TagcacheBundle\TagCahe\TagcacheAdapter;
+use RickySu\Tagcache\TagcacheFactory as CacheFactory;
 
 class TagcacheFactory
 {
@@ -12,26 +12,12 @@ class TagcacheFactory
     {
     }
 
-    protected static function factory($Config)
-    {
-        $Driver='RickySu\\TagcacheBundle\\Adapter\\'.$Config['driver'];
-        self::$Instance=new $Driver($Config['namespace'],$Config['options']);
-
-        return self::$Instance;
-    }
-
-    /**
-     * Get Tagcache Instance
-     * @return sfTagcacheAdapter
-     */
     public static function getInstance($Config)
     {
-        if (self::$Instance instanceof TagcacheAdapter) {
-            return self::$Instance;
+        if(!self::$Instance){
+            self::$Instance=CacheFactory::factory($Config);
         }
-
-        return self::factory($Config);
-
+        return self::$Instance;
     }
 
 }
