@@ -173,6 +173,13 @@ class DemoController extends Controller
 
 ![cached access](https://raw.github.com/RickySu/tagcache-bundle/master/img-cached.jpg)
 
+
+#### Clear Cache
+
+```
+app/console cache:clear
+```
+
 #### Note
 
 If you both define cache params in view and controller. "tagcache" variable in view will overwrite controller annotations.
