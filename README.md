@@ -144,7 +144,7 @@ class DemoController extends Controller
 
     /**
      * @Route("/test", name="_demo_test")
-     * @Tagcache(expires=600,tags={"TagA","TagB"},cachekey=custom_cache_key,cache=true)
+     * @Tagcache(expires=600,tags={"TagA","TagB"},key="custom_cache_key",cache=true)
      * @Template()
      */
     public function testAction()
@@ -154,7 +154,7 @@ class DemoController extends Controller
 }
 ```
 
-#### View Setting(Twig)
+#### View Setting(Twig) (for Symfony 2.1)
 
 ```html+jinja
 {#in view render a controller#}
@@ -165,6 +165,24 @@ class DemoController extends Controller
            'expires': 300
      }
 }%}
+```
+
+#### View Setting(Twig) (for Symfony 2.2)
+
+```html+jinja
+{#in view render a controller#}
+{%render(
+    controller(
+        'AcmeDemoBundle:Demo:test',
+        {
+            'tagcache':    {
+                'key':    'custom_cache_key',
+                'tags':   ['TagA','TagB'],   
+                'expires': 300
+            }
+        }
+    )
+)%}
 ```
 
 #### Your Familiar Partial Cache Comes Back

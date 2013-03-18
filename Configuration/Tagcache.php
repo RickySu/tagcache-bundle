@@ -117,4 +117,16 @@ class Tagcache extends ConfigurationAnnotation
             'cache'   => $this->EnableCache,
         );
     }
+    
+    /**
+     * Only one cache directive is allowed
+     * 
+     * @return Boolean
+     * @see ConfigurationInterface
+     */
+    public function allowArray()
+    {
+        return false;
+    }                                                     
+    
 }
