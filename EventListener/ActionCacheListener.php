@@ -113,7 +113,9 @@ class ActionCacheListener {
 
     public function handleResponse(FilterResponseEvent $Event) {
         if (HttpKernelInterface::MASTER_REQUEST === $Event->getRequestType()) {
-            $this->injectAssets($Event->getResponse());
+            if ($this->Config['debug']) {
+                $this->injectAssets($Event->getResponse());
+            }
         }
         if (!($TagcacheConfig = $this->getTagcacheConfig($Event))) {
             return;
