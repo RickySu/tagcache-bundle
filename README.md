@@ -53,11 +53,10 @@ Configuration
 ### Configure cache adapter
 
 ```yml
-// app/config/config.yml
+# app/config/config.yml
 tagcache:
     driver:                     Memcache
     debug:                      %kernel.debug%
-    namespace:                  'Name_Space_For_Your_Project'
     options:
         hashkey:                true
         enable_largeobject:     false
@@ -65,6 +64,18 @@ tagcache:
         servers:
             -    'localhost:11211:10'
             -    'otherhost:11211:20'
+```
+
+```yml
+# app/config/config_dev.yml
+tagcache:
+    namespace:                  'Name_Space_For_Your_Project:dev'
+```
+
+```yml
+# app/config/config_prod.yml
+tagcache:
+    namespace:                  'Name_Space_For_Your_Project:prod'
 ```
 
 #### driver
