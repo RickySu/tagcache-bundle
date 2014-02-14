@@ -101,7 +101,7 @@ class ActionCacheListener {
         if (!($TagcacheConfig = $this->getTagcacheConfig($Event))) {
             return;
         }
-        if (is_array($CacheContent = $this->Tagcache->get($TagcacheConfig['key'].":".( $this->Config['debug'] ? "dev" : "prod")))) {
+        if (is_array($CacheContent = $this->Tagcache->get($TagcacheConfig['key']))) {
             if ($CacheContent['Expires'] - (time() - $CacheContent['CreatedAt']) < 0) {
                 return;
             }
@@ -123,10 +123,8 @@ class ActionCacheListener {
         if (!($Event->getResponse() instanceof TagcacheResponse)) {
             $Tags = is_array($TagcacheConfig['tags']) ? $TagcacheConfig['tags'] : array();
             array_push($Tags, $this->buildViewCacheTag());
-            
-            $AddEnvKey = $TagcacheConfig['key'].":".( $this->Config['debug'] ? "dev" : "prod");
             $CacheContent = array(
-                'Key' => $AddEnvKey,
+                'Key' => $TagcacheConfig['key'],
                 'Expires' => $TagcacheConfig['expires'],
                 'Tags' => $Tags,
                 'CreatedAt' => time(),
