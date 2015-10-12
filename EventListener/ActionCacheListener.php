@@ -121,6 +121,9 @@ class ActionCacheListener {
             return;
         }
         if (!($Event->getResponse() instanceof TagcacheResponse)) {
+            if(!$Event->getResponse()->isOk()){
+                return;           
+            }
             $Tags = is_array($TagcacheConfig['tags']) ? $TagcacheConfig['tags'] : array();
             array_push($Tags, $this->buildViewCacheTag());
             $CacheContent = array(
