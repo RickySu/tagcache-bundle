@@ -1,6 +1,7 @@
 <?php
 
 namespace RickySu\TagcacheBundle\Configuration;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
 /**
@@ -41,37 +42,64 @@ class Tagcache extends ConfigurationAnnotation
      */
     protected $public;
 
+    /**
+     * @var
+     */
     protected $cachekey;
 
+    /**
+     * @var
+     */
     protected $tags;
 
+    /**
+     * @var
+     */
     protected $EnableCache;
 
+    /**
+     * @param $Enable
+     */
     public function setCache($Enable)
     {
-        $this->EnableCache=$Enable;
+        $this->EnableCache = $Enable;
     }
 
+    /**
+     * @return mixed
+     */
     public function getCache()
     {
         return $this->EnableCache;
     }
 
+    /**
+     * @param $cachekey
+     */
     public function setKey($cachekey)
     {
-        $this->cachekey=$cachekey;
+        $this->cachekey = $cachekey;
     }
 
+    /**
+     * @return mixed
+     */
     public function getKey()
     {
         return $this->cachekey;
     }
 
+    /**
+     * @param $tags
+     */
     public function setTags($tags)
     {
-        $this->tags=$tags;
+        $this->tags = $tags;
     }
 
+    /**
+     * @return mixed
+     */
     public function getTags()
     {
         return $this->tags;
@@ -108,25 +136,28 @@ class Tagcache extends ConfigurationAnnotation
         return 'tagcache';
     }
 
+    /**
+     * @return array
+     */
     public function getConfigs()
     {
         return array(
             'key' => $this->cachekey,
             'expires' => $this->expires,
-            'tags'    => $this->tags,
-            'cache'   => $this->EnableCache,
+            'tags' => $this->tags,
+            'cache' => $this->EnableCache,
         );
     }
-    
+
     /**
      * Only one cache directive is allowed
-     * 
+     *
      * @return Boolean
      * @see ConfigurationInterface
      */
     public function allowArray()
     {
         return false;
-    }                                                     
-    
+    }
+
 }

@@ -5,19 +5,38 @@ namespace RickySu\TagcacheBundle;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ * Class TagcacheCacheClearer
+ * @package RickySu\TagcacheBundle
+ */
 class TagcacheCacheClearer implements CacheClearerInterface
 {
-    protected $Container,$Config;
+    /**
+     * @var ContainerInterface
+     */
+    /**
+     * @var ContainerInterface
+     */
+    protected $container, $config;
 
-    public function __construct(ContainerInterface $Container,$Config)
+    /**
+     * TagcacheCacheClearer constructor.
+     *
+     * @param ContainerInterface $container
+     * @param                    $config
+     */
+    public function __construct(ContainerInterface $container, $config)
     {
-        $this->Container=$Container;
-        $this->Config=$Config;
+        $this->container = $container;
+        $this->config = $config;
     }
+
+    /**
+     * @param $cacheDir
+     */
     public function clear($cacheDir)
     {
-        $TagCache=$this->Container->get('tagcache');
-        $TagCache->deleteTag('Tag:View'.':'.($this->Config['debug']?'dev':'prod'));
+        $TagCache = $this->container->get('tagcache');
+        $TagCache->deleteTag('Tag:View' . ':' . ($this->config['debug'] ? 'dev' : 'prod'));
     }
-
 }

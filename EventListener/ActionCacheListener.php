@@ -13,149 +13,208 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use RickySu\TagcacheBundle\Configuration\Tagcache as TagcacheConfigurationAnnotation;
 
-class ActionCacheListener {
-
+/**
+ * Class ActionCacheListener
+ * @package RickySu\TagcacheBundle\EventListener
+ */
+class ActionCacheListener
+{
+    /**
+     *
+     */
     const TAG_VIEW_CACHE = 'Tag:View';
 
     /**
-     * @var Symfony\Component\DependencyInjection\ContainerInterface
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
      */
-    protected $Container;
+    protected $container;
 
     /**
      *
-     * @var RickySu\TagcacheBundle\Adapter\TagcacheAdapter
+     * @var \RickySu\TagcacheBundle\Adapter\TagcacheAdapter
      */
-    protected $Tagcache;
-    protected $Reader = null;
-    protected $Resolver = null;
-    protected $Config;
+    protected $tagcache;
+    /**
+     * @var null
+     */
+    protected $reader = null;
+    /**
+     * @var null
+     */
+    protected $resolver = null;
+    /**
+     * @var
+     */
+    protected $config;
 
     /**
-     * Constructor.
+     * ActionCacheListener constructor.
      *
-     * @param ContainerInterface $container The service container instance
+     * @param ContainerInterface $container
+     * @param                    $resolver
+     * @param                    $config
      */
-    public function __construct(ContainerInterface $container, $Resolver, $Config) {
-        $this->Container = $container;
-        $this->Tagcache = $container->get('tagcache');
-        $this->Reader = $container->get('annotation_reader');
-        $this->Resolver = $Resolver;
-        $this->Config = $Config;
+    public function __construct(ContainerInterface $container, $resolver, $config)
+    {
+        $this->container = $container;
+        $this->tagcache = $container->get('tagcache');
+        $this->reader = $container->get('annotation_reader');
+        $this->resolver = $resolver;
+        $this->config = $config;
     }
 
-    protected function loadAnnotationConfig($Event) {
-        if (!($Controller = $this->Resolver->getController($Event->getRequest()))) {
+    /**
+     * @param $event
+     *
+     * @return array
+     */
+    protected function loadAnnotationConfig($event)
+    {
+        if (!($controller = $this->resolver->getController($event->getRequest()))) {
             return array();
         }
-        $Object = new \ReflectionObject($Controller[0]);
-        $Method = $Object->getMethod($Controller[1]);
-        foreach ($this->Reader->getMethodAnnotations($Method) as $Configuration) {
-            if ($Configuration instanceof TagcacheConfigurationAnnotation) {
-                $TagcacheConfig = $Event->getRequest()->attributes->get('tagcache');
-                $AnnotationConfig = $Configuration->getConfigs();
-                if (!is_array($TagcacheConfig)) {
-                    $TagcacheConfig = array();
+        $object = new \ReflectionObject($controller[0]);
+        $method = $object->getMethod($controller[1]);
+        foreach ($this->reader->getMethodAnnotations($method) as $configuration) {
+            if ($configuration instanceof TagcacheConfigurationAnnotation) {
+                $tagcacheConfig = $event->getRequest()->attributes->get('tagcache');
+                $annotationConfig = $configuration->getConfigs();
+                if (!is_array($tagcacheConfig)) {
+                    $tagcacheConfig = array();
                 }
-                $TagcacheConfig = array_merge($AnnotationConfig, $TagcacheConfig);
-                if (!isset($AnnotationConfig['cache']) || $AnnotationConfig['cache'] != true) {
-                    $TagcacheConfig = array();
+                $tagcacheConfig = array_merge($annotationConfig, $tagcacheConfig);
+                if (!isset($annotationConfig['cache']) || $annotationConfig['cache'] != true) {
+                    $tagcacheConfig = array();
                 }
-                $Event->getRequest()->attributes->set('tagcache', $TagcacheConfig);
+                $event->getRequest()->attributes->set('tagcache', $tagcacheConfig);
 
-                return $TagcacheConfig;
+                return $tagcacheConfig;
             }
         }
 
         return array();
     }
 
-    protected function getTagcacheConfig($Event) {
-        $DefaultConfig = array(
+    /**
+     * @param $event
+     *
+     * @return array|bool
+     */
+    protected function getTagcacheConfig($event)
+    {
+        $defaultConfig = array(
             'cache' => true,
             'tags' => array(),
             'expires' => 600,
         );
-        if (is_array($TagcacheConfig = $Event->getRequest()->attributes->get('tagcache'))) {
-            $TagcacheConfig = array_merge($DefaultConfig, $TagcacheConfig);
+        if (is_array($tagcacheConfig = $event->getRequest()->attributes->get('tagcache'))) {
+            $tagcacheConfig = array_merge($defaultConfig, $tagcacheConfig);
         } else {
-            $TagcacheConfig = array('cache' => false);
+            $tagcacheConfig = array('cache' => false);
         }
-        $TagcacheConfig = array_merge($TagcacheConfig, $this->loadAnnotationConfig($Event));
-        if (!$TagcacheConfig['cache']) {
+        $tagcacheConfig = array_merge($tagcacheConfig, $this->loadAnnotationConfig($event));
+        if (!$tagcacheConfig['cache']) {
             return false;
         }
-        if (!isset($TagcacheConfig['key'])) {
-            $TagcacheConfig['key'] = $Event->getRequest()->attributes->get('_controller');
+        if (!isset($tagcacheConfig['key'])) {
+            $tagcacheConfig['key'] = $event->getRequest()->attributes->get('_controller');
         }
 
-        return $TagcacheConfig;
+        return $tagcacheConfig;
     }
 
     /**
      * Handles the event when notified or filtered.
      *
-     * @param Event $event
+     * @param GetResponseEvent $event
      */
-    public function handleRequest(GetResponseEvent $Event) {
-        if (!($TagcacheConfig = $this->getTagcacheConfig($Event))) {
+    public function handleRequest(GetResponseEvent $event)
+    {
+        if (!($tagcacheConfig = $this->getTagcacheConfig($event))) {
             return;
         }
-        if (is_array($CacheContent = $this->Tagcache->get($TagcacheConfig['key']))) {
-            if ($CacheContent['Expires'] - (time() - $CacheContent['CreatedAt']) < 0) {
+        if (is_array($cacheContent = $this->tagcache->get($tagcacheConfig['key']))) {
+            if ($cacheContent['Expires'] - (time() - $cacheContent['CreatedAt']) < 0) {
                 return;
             }
-            $Event->setResponse(new TagcacheResponse($this->renderCacheContent($CacheContent)));
+            $event->setResponse(new TagcacheResponse($this->renderCacheContent($cacheContent)));
 
             return;
         }
     }
 
-    public function handleResponse(FilterResponseEvent $Event) {
-        if (HttpKernelInterface::MASTER_REQUEST === $Event->getRequestType()) {
-            if ($this->Config['debug']) {
-                $this->injectAssets($Event->getResponse());
+    /**
+     * @param FilterResponseEvent $event
+     */
+    public function handleResponse(FilterResponseEvent $event)
+    {
+        if (HttpKernelInterface::MASTER_REQUEST === $event->getRequestType()) {
+            if ($this->config['debug']) {
+                $this->injectAssets($event->getResponse());
             }
         }
-        if (!($TagcacheConfig = $this->getTagcacheConfig($Event))) {
+        if (!($tagcacheConfig = $this->getTagcacheConfig($event))) {
             return;
         }
-        if (!($Event->getResponse() instanceof TagcacheResponse)) {
-            if(!$Event->getResponse()->isOk()){
-                return;           
+        if (!($event->getResponse() instanceof TagcacheResponse)) {
+            if (!$event->getResponse()->isOk()) {
+                return;
             }
-            $Tags = is_array($TagcacheConfig['tags']) ? $TagcacheConfig['tags'] : array();
-            array_push($Tags, $this->buildViewCacheTag());
-            $CacheContent = array(
-                'Key' => $TagcacheConfig['key'],
-                'Expires' => $TagcacheConfig['expires'],
-                'Tags' => $Tags,
+            $tags = is_array($tagcacheConfig['tags']) ? $tagcacheConfig['tags'] : array();
+            array_push($tags, $this->buildViewCacheTag());
+            $cacheContent = array(
+                'Key' => $tagcacheConfig['key'],
+                'Expires' => $tagcacheConfig['expires'],
+                'Tags' => $tags,
                 'CreatedAt' => time(),
-                'Content' => $Event->getResponse()->getContent(),
-                'Controller' => $Event->getRequest()->get('_controller'),
+                'Content' => $event->getResponse()->getContent(),
+                'Controller' => $event->getRequest()->get('_controller'),
             );
-            $this->Tagcache->set($TagcacheConfig['key'], $CacheContent, $CacheContent['Tags'], $TagcacheConfig['expires']);
-            $Event->getResponse()->setContent($this->renderCacheContent($CacheContent, false));
+            $this->tagcache->set(
+                $tagcacheConfig['key'],
+                $cacheContent,
+                $cacheContent['Tags'],
+                $tagcacheConfig['expires']
+            );
+            $event->getResponse()->setContent($this->renderCacheContent($cacheContent, false));
         }
     }
 
-    protected function buildViewCacheTag() {
-        return self::TAG_VIEW_CACHE . ':' . ($this->Config['debug'] ? 'dev' : 'prod');
+    /**
+     * @return string
+     */
+    protected function buildViewCacheTag()
+    {
+        return self::TAG_VIEW_CACHE . ':' . ($this->config['debug'] ? 'dev' : 'prod');
     }
 
-    protected function renderCacheContent($CacheContent, $CacheHit = true) {
-        if (!$this->Config['debug']) {
-            return $CacheContent['Content'];
+    /**
+     * @param           $cacheContent
+     * @param bool|true $cacheHit
+     *
+     * @return mixed
+     */
+    protected function renderCacheContent($cacheContent, $cacheHit = true)
+    {
+        if (!$this->config['debug']) {
+            return $cacheContent['Content'];
         }
-        $CacheContent['lastmodify'] = time() - $CacheContent['CreatedAt'];
-        $Twig = $this->Container->get('twig');
+        $cacheContent['lastmodify'] = time() - $cacheContent['CreatedAt'];
+        $Twig = $this->container->get('twig');
 
-        return $Twig->render('TagcacheBundle:html:tagcache_debug_panel.html.twig', array('CacheHit' => $CacheHit, 'CacheContent' => $CacheContent, 'uniqueid' => md5(microtime() . rand())));
+        return $Twig->render(
+            'TagcacheBundle:html:tagcache_debug_panel.html.twig',
+            array('CacheHit' => $cacheHit, 'CacheContent' => $cacheContent, 'uniqueid' => md5(microtime() . rand()))
+        );
     }
 
-    protected function injectAssets(Response $Response) {
-        $Twig = $this->Container->get('twig');
-        $Content = $Response->getContent();
+    /**
+     * @param Response $response
+     */
+    protected function injectAssets(Response $response)
+    {
+        $Twig = $this->container->get('twig');
+        $content = $response->getContent();
         if (function_exists('mb_stripos')) {
             $posrFunction = 'mb_strripos';
             $posFunction = 'mb_stripos';
@@ -165,13 +224,12 @@ class ActionCacheListener {
             $posFunction = 'stripos';
             $substrFunction = 'substr';
         }
-        $pos = $posrFunction($Content, '</head>');
+        $pos = $posrFunction($content, '</head>');
         if (false !== $pos) {
-            $CSS = $Twig->render('TagcacheBundle:css:tagcache_debug_css.html.twig');
-            $JS = $Twig->render('TagcacheBundle:js:tagcache_debug_js.html.twig');
-            $Content = $substrFunction($Content, 0, $pos) . $CSS . $JS . $substrFunction($Content, $pos);
-            $Response->setContent($Content);
+            $css = $Twig->render('TagcacheBundle:css:tagcache_debug_css.html.twig');
+            $js = $Twig->render('TagcacheBundle:js:tagcache_debug_js.html.twig');
+            $content = $substrFunction($content, 0, $pos) . $css . $js . $substrFunction($content, $pos);
+            $response->setContent($content);
         }
     }
-
 }
