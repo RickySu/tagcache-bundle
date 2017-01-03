@@ -10,8 +10,7 @@ services:
             arguments:             ['@service_container',%tagcache%]
         tagcache:
             class:                  %tagcache.adapter.class%
-            factory_class:         %tagcache.factory.class%
-            factory_method:        getInstance
+            factory:                %tagcache.factory.class%::getInstance
             arguments:
                 -                    %tagcache%
         action_cache_listener_service:
