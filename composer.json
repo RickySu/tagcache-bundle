@@ -14,7 +14,8 @@
     "require": {
         "php": ">=5.3.2",
         "rickysu/tagcache":  "1.0.*",
-        "sensio/framework-extra-bundle":  ">=2.1.0"
+        "sensio/framework-extra-bundle":  ">=2.1.0",
+        "symfony/symfony": ">=2.6.0"
     },
     "autoload": {
         "psr-0": { "RickySu\\TagcacheBundle": "" }
