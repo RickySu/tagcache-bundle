@@ -204,7 +204,7 @@ class ActionCacheListener
      */
     protected function injectAssets(Response $response)
     {
-        $Twig = $this->container->get('twig');
+        $Twig = $this->twig;
         $content = $response->getContent();
         if (function_exists('mb_stripos')) {
             $posrFunction = 'mb_strripos';
