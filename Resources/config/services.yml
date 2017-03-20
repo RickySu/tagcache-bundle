@@ -15,9 +15,14 @@ services:
                 -                    %tagcache%
         action_cache_listener_service:
             class:                 RickySu\TagcacheBundle\EventListener\ActionCacheListener
-            arguments:             ['@service_container','@controller_resolver',%tagcache%]
+            arguments:
+                -                  '@tagcache'
+                -                  '@annotation_reader'
+                -                  '@controller_resolver'
+                -                  %tagcache%
+                -                  '@?twig'
             tags:
                  #request lower priority
                  #response higher priority
-                                   - { name: kernel.event_listener, event: kernel.request, method: handleRequest  ,priority: -999 }
-                                   - { name: kernel.event_listener, event: kernel.response, method: handleResponse  ,priority: 999 }
+                -                 { name: kernel.event_listener, event: kernel.request, method: handleRequest  ,priority: -999 }
+                -                 { name: kernel.event_listener, event: kernel.response, method: handleResponse  ,priority: 999 }

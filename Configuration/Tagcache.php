@@ -5,94 +5,24 @@ namespace RickySu\TagcacheBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
 /**
- * The Cache class handles the @Cache annotation parts.
- *
- * @author Fabien Potencier <fabien@symfony.com>
  * @Annotation
  */
 class Tagcache extends ConfigurationAnnotation
 {
-    /**
-     * The expiration date as a valid date for the strtotime() function.
-     *
-     * @var string
-     */
+    protected $key;
+
+    protected $tags = array();
+
+    protected $cache = true;
+
     protected $expires;
 
-    /**
-     * The number of seconds that the response is considered fresh by a private
-     * cache like a web browser.
-     *
-     * @var integer
-     */
-    protected $maxage;
-
-    /**
-     * The number of seconds that the response is considered fresh by a public
-     * cache like a reverse proxy cache.
-     *
-     * @var integer
-     */
-    protected $smaxage;
-
-    /**
-     * Whether or not the response is public or not.
-     *
-     * @var integer
-     */
-    protected $public;
-
-    /**
-     * @var
-     */
-    protected $cachekey;
-
-    /**
-     * @var
-     */
-    protected $tags;
-
-    /**
-     * @var
-     */
-    protected $EnableCache;
-
-    /**
-     * @param $Enable
-     */
-    public function setCache($Enable)
-    {
-        $this->EnableCache = $Enable;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCache()
-    {
-        return $this->EnableCache;
-    }
-
-    /**
-     * @param $cachekey
-     */
-    public function setKey($cachekey)
-    {
-        $this->cachekey = $cachekey;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getKey()
-    {
-        return $this->cachekey;
-    }
+    protected $express;
 
     /**
      * @param $tags
      */
-    public function setTags($tags)
+    public function setTags(array $tags)
     {
         $this->tags = $tags;
     }
@@ -142,10 +72,10 @@ class Tagcache extends ConfigurationAnnotation
     public function getConfigs()
     {
         return array(
-            'key' => $this->cachekey,
+            'key' => $this->key,
             'expires' => $this->expires,
             'tags' => $this->tags,
-            'cache' => $this->EnableCache,
+            'cache' => $this->cache,
         );
     }
 
@@ -158,6 +88,54 @@ class Tagcache extends ConfigurationAnnotation
     public function allowArray()
     {
         return false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExpress()
+    {
+        return $this->express;
+    }
+
+    /**
+     * @param mixed $express
+     */
+    public function setExpress($express)
+    {
+        $this->express = $express;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getCache()
+    {
+        return $this->cache;
+    }
+
+    /**
+     * @param bool $cache
+     */
+    public function setCache($cache)
+    {
+        $this->cache = $cache;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getKey()
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param mixed $key
+     */
+    public function setKey($key)
+    {
+        $this->key = $key;
     }
 
 }
